@@ -1,0 +1,33 @@
+{% assign debugOn = false %}
+{% include 'ws-pro-logger', debugOn: debugOn, message: '== Product Price Calculator ==' %}
+{% include 'ws-pro-logger', debugOn: debugOn, label: 'Title:', message: product.title %}
+{% include 'ws-pro-logger', debugOn: debugOn, label: 'Normal Price:', message: product.price %}
+{% capture customerDiscounts %}{%- include 'ws-customer-discounts-string' -%}{% endcapture %}
+{% assign discounts = customerDiscounts | split: '|' %}
+{% assign productPrice = product.price %}
+{% assign finalPrice = productPrice %}
+{% for discount in discounts %}
+  {% include 'ws-pro-logger', debugOn: debugOn, message: discount %}
+  {% assign discountTokens = discount | split: ':' %}
+  {% assign discountId = discountTokens[0] | strip %}
+  {% assign discountValue = discountTokens[1] %}
+  {% assign discountType = discountTokens[2] %}
+  {% for collection in collections %}
+    {% assign collectionId = 'collection' | append: collection.id | strip %}
+    {% if discountId == collectionId %}
+      {% case discountType %}
+              {% when 'percentage' %}
+        {% include 'ws-pro-logger', debugOn: debugOn, label: 'Discount:', message: discountValue %}
+        {% assign discountedPrice = 100 | minus: discountValue | times: productPrice | divided_by: 100 %}
+        {% include 'ws-pro-logger', debugOn: debugOn, label: 'Discounted Price:', message: discountedPrice %}
+        {% if finalPrice > discountedPrice %}
+          {% include 'ws-pro-logger', debugOn: debugOn, label: 'Discounted price is lower than', message: finalPrice %}
+          {% assign finalPrice = discountedPrice %}
+        {% endif %}
+            {% endcase %}
+    {% endif %}
+  {% endfor %}
+{% endfor %}
+{% include 'ws-pro-logger', debugOn: debugOn, label: 'Final Price:', message: finalPrice %}
+
+{{finalPrice}}

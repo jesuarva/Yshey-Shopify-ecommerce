@@ -1,0 +1,359 @@
+{% comment %}ly_global_begin{% endcomment %}{% include 'ly-global' %}{% comment %}ly_global_end{% endcomment %}
+<div class='section moduloInstagram'>
+  {% assign veces=0 %}
+  {% for block in section.blocks %}
+      
+      {% case block.type %}
+
+        {% when 'uno' %}
+
+          {%- assign producto = all_products[block.settings.producto] -%}
+          <div class='uno tobeanimatedUp'>
+            <a {% if block.settings.desactivaBoton == false %} href='{{producto.url}}' {% endif %}>
+              <div class='insta instagramImgUno {% if veces == 0 %}primera{% endif %}'>
+                <div class='imageI' style='background-image: url({{block.settings.img | img_url: "1600x"}})'>
+                  <div class='front'>
+                    <div class='center'>
+                      <h4 class='tobeanimatedUp'>{% comment %}ly_code_replace_for_[producto.title]_begin{% endcomment %}{% include 'ly-title' with producto %}{{ly_translation}}{% comment %}ly_code_replace_end{% endcomment %}</h4>
+                      <h5 class='tobeanimatedUp'>{{block.settings.instagramId}}</h5>
+                  
+                      <div class='botonShop'><ly-as-4182627>Shop Now</ly-as-4182627></div>
+                      
+                    </div>
+                  </div>
+                  {% if block.settings.desactivaBoton == false %}
+                    <div class='back'>
+                      <div class='botonShop'><ly-as-4182627>Shop Now</ly-as-4182627></div>
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+            </a>
+          </div>
+        {% when 'duo' %}
+
+          {%- assign producto1 = all_products[block.settings.producto1] -%}
+          {%- assign producto2 = all_products[block.settings.producto2] -%}
+          <div class='duo tobeanimatedUp'>
+            <a {% if block.settings.desactivaBoton1 == false %} href='{{producto1.url}}' {% endif %}>
+              <div class='insta instagramImgDuo'>
+                <div class='imageI' style='background-image: url({{block.settings.imgIzq1 | img_url: "700x"}})'>
+                  <div class='front'>
+                    <div class='center'>
+                      <h4 class='tobeanimatedUp'>{% comment %}ly_code_replace_for_[producto1.title]_begin{% endcomment %}{% include 'ly-title' with producto1 %}{{ly_translation}}{% comment %}ly_code_replace_end{% endcomment %}</h4>
+                      <h5 class='tobeanimatedUp'>{{block.settings.instagramId1}}</h5>
+                      <div class='botonShop'><ly-as-4182627>Shop Now</ly-as-4182627></div>
+                    </div>
+                  </div>
+                  {% if block.settings.desactivaBoton1 == false %}
+                    <div class='back'>
+                      <div class='botonShop'><ly-as-4182627>Shop Now</ly-as-4182627></div>
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+            </a>
+            <a {% if block.settings.desactivaBoton2 == false %} href='{{producto2.url}}' {% endif %}>
+              <div class='insta instagramImgDuo'>
+                <div class='imageI' style='background-image: url({{block.settings.imgIzq2 | img_url: "700x"}})'>
+                  <div class='front'>
+                    <div class='center'>
+                      <h4 class='tobeanimatedUp'>{% comment %}ly_code_replace_for_[producto2.title]_begin{% endcomment %}{% include 'ly-title' with producto2 %}{{ly_translation}}{% comment %}ly_code_replace_end{% endcomment %}</h4>
+                      <h5 class='tobeanimatedUp'>{{block.settings.instagramId2}}</h5>
+                      <div class='botonShop'><ly-as-4182627>Shop Now</ly-as-4182627></div>
+                    </div>
+                  </div>
+                  {% if block.settings.desactivaBoton2 == false %}
+                    <div class='back'>
+                      <div class='botonShop'><ly-as-4182627>Shop Now</ly-as-4182627></div>
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+            </a>
+          </div>
+          <div style='clear:both;'></div>
+
+        {% when 'cuarteto' %}
+
+          {%- assign producto1 = all_products[block.settings.producto1] -%}
+          {%- assign producto2 = all_products[block.settings.producto2] -%}
+          {%- assign producto3 = all_products[block.settings.producto3] -%}
+          {%- assign producto4 = all_products[block.settings.producto4] -%}
+          <div class='cuarteto tobeanimatedUp'>
+            <a {% if block.settings.desactivaBoton1 == false %} href='{{producto1.url}}' {% endif %}>
+              <div class='insta instagramImgCuar'>
+                <div class='imageI' style='background-image: url({{block.settings.imgIzq1 | img_url: "700x"}})'>
+                  <div class='front'>
+                    <div class='center'>
+                      <h4 class='tobeanimatedUp'>{% comment %}ly_code_replace_for_[producto1.title]_begin{% endcomment %}{% include 'ly-title' with producto1 %}{{ly_translation}}{% comment %}ly_code_replace_end{% endcomment %}</h4>
+                      <h5 class='tobeanimatedUp'>{{block.settings.instagramId1}}</h5>
+                      <div class='botonShop'><ly-as-4182627>Shop Now</ly-as-4182627></div>
+                    </div>
+                  </div>
+                  {% if block.settings.desactivaBoton1 == false %}
+                    <div class='back'>
+                      <div class='botonShop'><ly-as-4182627>Shop Now</ly-as-4182627></div>
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+            </a>
+            <a {% if block.settings.desactivaBoton2 == false %} href='{{producto2.url}}' {% endif %}>
+              <div class='insta instagramImgCuar'>
+                <div class='imageI' style='background-image: url({{block.settings.imgIzq2 | img_url: "700x"}})'>
+                  <div class='front'>
+                    <div class='center'>
+                      <h4 class='tobeanimatedUp'>{% comment %}ly_code_replace_for_[producto2.title]_begin{% endcomment %}{% include 'ly-title' with producto2 %}{{ly_translation}}{% comment %}ly_code_replace_end{% endcomment %}</h4>
+                      <h5 class='tobeanimatedUp'>{{block.settings.instagramId2}}</h5>
+                      <div class='botonShop'><ly-as-4182627>Shop Now</ly-as-4182627></div>
+                    </div>
+                  </div>
+                  {% if block.settings.desactivaBoton2 == false %}
+                    <div class='back'>
+                      <div class='botonShop'><ly-as-4182627>Shop Now</ly-as-4182627></div>
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+            </a>
+            <a {% if block.settings.desactivaBoton3 == false %} href='{{producto3.url}}' {% endif %}>
+              <div class='insta instagramImgCuar'>
+                <div class='imageI' style='background-image: url({{block.settings.imgIzq3 | img_url: "700x"}})'>
+                  <div class='front'>
+                    <div class='center'>
+                      <h4 class='tobeanimatedUp'>{% comment %}ly_code_replace_for_[producto3.title]_begin{% endcomment %}{% include 'ly-title' with producto3 %}{{ly_translation}}{% comment %}ly_code_replace_end{% endcomment %}</h4>
+                      <h5 class='tobeanimatedUp'>{{block.settings.instagramId3}}</h5>
+                      <div class='botonShop'><ly-as-4182627>Shop Now</ly-as-4182627></div>
+                    </div>
+                  </div>
+                  {% if block.settings.desactivaBoton3 == false %}
+                    <div class='back'>
+                      <div class='botonShop'><ly-as-4182627>Shop Now</ly-as-4182627></div>
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+            </a>
+            <a {% if block.settings.desactivaBoton4 == false %} href='{{producto4.url}}' {% endif %}>
+              <div class='insta instagramImgCuar'>
+                <div class='imageI' style='background-image: url({{block.settings.imgIzq4 | img_url: "700x"}})'>
+                  <div class='front'>
+                    <div class='center'>
+                      <h4 class='tobeanimatedUp'>{% comment %}ly_code_replace_for_[producto4.title]_begin{% endcomment %}{% include 'ly-title' with producto4 %}{{ly_translation}}{% comment %}ly_code_replace_end{% endcomment %}</h4>
+                      <h5 class='tobeanimatedUp'>{{block.settings.instagramId4}}</h5>
+                      <div class='botonShop'><ly-as-4182627>Shop Now</ly-as-4182627></div>
+                    </div>
+                  </div>
+                  {% if block.settings.desactivaBoton4 == false %}
+                    <div class='back'>
+                      <div class='botonShop'><ly-as-4182627>Shop Now</ly-as-4182627></div>
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+            </a>
+          </div>
+          <div style='clear:both;'></div>
+          
+      {% endcase %}
+
+      {% assign veces = veces | plus:1 %}
+  {% endfor %}
+  
+
+</div>
+
+{% schema %}
+  {
+    "name": "Shop Instagram Page",
+    "settings": [],
+    "blocks": [
+        {
+        "type": "uno",
+        "name": "Uno",
+        "settings": [
+          { 
+            "type": "image_picker",
+            "id": "img",
+            "label": "Imagen",
+            "info": "Imagen con un mínimo de alto/ancho a 1400px"
+          },
+          {
+            "type":      "product",
+            "id":        "producto",
+            "label":     "Producto"
+          },
+          {
+             "type":      "text",
+             "id":        "instagramId",
+             "label":     "Nombre en instagram",
+             "placeholder": "@kristinaperic26"
+          },
+          {
+            "type": "checkbox",
+            "id": "desactivaBoton",
+            "label": "Quitar botón"
+          }
+        ]
+      },
+        {
+        "type": "duo",
+        "name": "Duo",
+        "settings": [
+          { 
+            "type": "image_picker",
+            "id": "imgIzq1",
+            "label": "Imagen | 1",
+            "info": "Imagen con un mínimo de alto/ancho a 700px"
+          },
+          {
+            "type":      "product",
+            "id":        "producto1",
+            "label":     "Producto | 1"
+          },
+          {
+             "type":      "text",
+             "id":        "instagramId1",
+             "label":     "Nombre en instagram | 1",
+             "placeholder": "@kristinaperic26"
+          },
+          {
+            "type": "checkbox",
+            "id": "desactivaBoton1",
+            "label": "Quitar botón"
+          },
+          { 
+            "type": "image_picker",
+            "id": "imgIzq2",
+            "label": "Imagen | 2",
+            "info": "Imagen con un mínimo de alto/ancho a 700px"
+          },
+          {
+            "type":      "product",
+            "id":        "producto2",
+            "label":     "Producto | 2"
+          },
+          {
+             "type":      "text",
+             "id":        "instagramId2",
+             "label":     "Nombre en instagram | 2",
+             "placeholder": "@kristinaperic26"
+          },
+          {
+            "type": "checkbox",
+            "id": "desactivaBoton2",
+            "label": "Quitar botón"
+          }
+        ]
+      },
+      {
+      "type": "cuarteto",
+      "name": "Cuarteto",
+      "settings": [
+          { 
+            "type": "image_picker",
+            "id": "imgIzq1",
+            "label": "Imagen | 1",
+            "info": "Imagen con un mínimo de alto/ancho a 750px"
+          },
+          {
+            "type":      "product",
+            "id":        "producto1",
+            "label":     "Producto | 1"
+          },
+          {
+             "type":      "text",
+             "id":        "instagramId1",
+             "label":     "Nombre en instagram | 1",
+             "placeholder": "@kristinaperic26"
+          },
+          {
+            "type": "checkbox",
+            "id": "desactivaBoton1",
+            "label": "Quitar botón"
+          },
+          { 
+            "type": "image_picker",
+            "id": "imgIzq2",
+            "label": "Imagen | 2",
+            "info": "Imagen con un mínimo de alto/ancho a 750px"
+          },
+          {
+            "type":      "product",
+            "id":        "producto2",
+            "label":     "Producto | 2"
+          },
+          {
+             "type":      "text",
+             "id":        "instagramId2",
+             "label":     "Nombre en instagram | 2",
+             "placeholder": "@kristinaperic26"
+          },
+          {
+            "type": "checkbox",
+            "id": "desactivaBoton2",
+            "label": "Quitar botón"
+          },
+          { 
+            "type": "image_picker",
+            "id": "imgIzq3",
+            "label": "Imagen | 3",
+            "info": "Imagen con un mínimo de alto/ancho a 750px"
+          },
+          {
+            "type":      "product",
+            "id":        "producto3",
+            "label":     "Producto | 3"
+          },
+          {
+             "type":      "text",
+             "id":        "instagramId3",
+             "label":     "Nombre en instagram | 3",
+             "placeholder": "@kristinaperic26"
+          },
+          {
+            "type": "checkbox",
+            "id": "desactivaBoton3",
+            "label": "Quitar botón"
+          },
+          { 
+            "type": "image_picker",
+            "id": "imgIzq4",
+            "label": "Imagen | 4",
+            "info": "Imagen con un mínimo de alto/ancho a 750px"
+          },
+          {
+            "type":      "product",
+            "id":        "producto4",
+            "label":     "Producto | 4"
+          },
+          {
+             "type":      "text",
+             "id":        "instagramId4",
+             "label":     "Nombre en instagram | 4",
+             "placeholder": "@kristinaperic26"
+          },
+          {
+            "type": "checkbox",
+            "id": "desactivaBoton4",
+            "label": "Quitar botón"
+          }
+      ]
+      }
+    ],
+    "presets": [{
+      "name": "Shop Instagram Page",
+      "category": "Shop Instagram Page",
+      "settings": {
+      }
+    }]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}
+

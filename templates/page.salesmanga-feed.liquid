@@ -1,0 +1,22 @@
+{% comment %}ly_global_begin{% endcomment %}{% include 'ly-global' %}{% comment %}ly_global_end{% endcomment %}{% layout none %}<?xml version="1.0" encoding="UTF-8" ?>
+<channel>
+{% paginate collections.all.products by 2000 %}{% for product in collections.all.products %}
+   <!-- Item #{{ forloop.index }} -->
+   <item>
+   <title><![CDATA[{% comment %}ly_code_replace_for_[ product.title | strip_html | strip_newlines | escape | replace: '&', 'and' | replace: '&#38;', 'and' | replace: "Ã©", "e" | replace: "Ã ", "a" ]_begin{% endcomment %}{% include 'ly-title' with product %}{{ ly_translation | strip_html | strip_newlines | escape | replace: '&', 'and' | replace: '&#38;', 'and' | replace: "Ã©", "e" | replace: "Ã ", "a" }}{% comment %}ly_code_replace_end{% endcomment %}]]></title>
+   <ID>{{product.id}}</ID>
+   <URL>{{shop.url}}{{product.url}}</URL>
+   <FOTO>https:{{product.featured_image | product_img_url: '<ly-as-4891505>large</ly-as-4891505>'}}</FOTO>  
+   <NOMBRE>{% comment %}ly_code_replace_for_[product.type]_begin{% endcomment %}{% include 'ly-type' with product %}{{ly_translation}}{% comment %}ly_code_replace_end{% endcomment %} - {% comment %}ly_code_replace_for_[product.title]_begin{% endcomment %}{% include 'ly-title' with product %}{{ly_translation}}{% comment %}ly_code_replace_end{% endcomment %}</NOMBRE>  
+   <CATEGORIA>
+     {% for collection in product.collections %}
+    	{% comment %}ly_code_replace_for_[ collection.title | replace: '&', '<ly-as-4891506>and</ly-as-4891506>' ]_begin{% endcomment %}{% include 'ly-title' with collection %}{{ ly_translation | replace: '&', '<ly-as-4891506>and</ly-as-4891506>' }}{% comment %}ly_code_replace_end{% endcomment %}
+     {% endfor %}
+      / {% comment %}ly_code_replace_for_[product.type | escape | replace: '&', '<ly-as-4891506>and</ly-as-4891506>']_begin{% endcomment %}{% include 'ly-type' with product %}{{ly_translation | escape | replace: '&', '<ly-as-4891506>and</ly-as-4891506>'}}{% comment %}ly_code_replace_end{% endcomment %}
+   </CATEGORIA>
+   <PRECIO>{{product.price | money_without_currency}}</PRECIO>  
+   <CANTIDAD>1</CANTIDAD>
+   <ESTADO><ly-as-4891507>Enable</ly-as-4891507></ESTADO>
+   </item>
+{% endfor %}{% endpaginate %}
+</channel>

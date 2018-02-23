@@ -1,0 +1,95 @@
+{% comment %}ly_global_begin{% endcomment %}{% include 'ly-global' %}{% comment %}ly_global_end{% endcomment %}
+{% unless template == 'index' %}
+<script type="text/javascript">
+  console.log({{ template | json }});
+</script>
+<nav class="breadcrumb" role="navigation" aria-label="breadcrumbs">
+  <a href="/" title="<ly-as-4182689>Home</ly-as-4182689>"><ly-as-4182689>Home</ly-as-4182689></a>
+  {% if template contains 'page' %}
+    <span aria-hidden="true">›</span>
+    <span>{% comment %}ly_code_replace_for_[ page.title ]_begin{% endcomment %}{% include 'ly-title' with page %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}</span>
+  {% elsif template contains 'product' %}
+    {% if collection.url %}
+      <span aria-hidden="true">›</span>
+      {% comment %}ly_code_replace_for_[ collection.title | link_to: collection.url ]_begin{% endcomment %}{% include 'ly-title' with collection %}{{ ly_translation | link_to: collection.url }}{% comment %}ly_code_replace_end{% endcomment %}
+    {% endif %}
+    <span aria-hidden="true">›</span>
+    <span>{% comment %}ly_code_replace_for_[ product.title ]_begin{% endcomment %}{% include 'ly-title' with product %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}</span>
+  {% elsif template contains 'collection' and collection.handle %}
+    <span aria-hidden="true">›</span>
+    {% if current_tags %}
+      {% capture url %}/collections/{{ collection.handle }}{% endcapture %}
+      {% comment %}ly_code_replace_for_[ collection.title | link_to: url ]_begin{% endcomment %}{% include 'ly-title' with collection %}{{ ly_translation | link_to: url }}{% comment %}ly_code_replace_end{% endcomment %}
+      <span aria-hidden="true">›</span>
+      <span>{{ current_tags | join: " + " }}</span>
+    {% else %}
+      <span>{% comment %}ly_code_replace_for_[ collection.title ]_begin{% endcomment %}{% include 'ly-title' with collection %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}</span>
+    {% endif %}
+  {% elsif template == 'blog' %}
+    <span aria-hidden="true">›</span>
+    {% if current_tags %}
+      {% comment %}ly_code_replace_for_[ blog.title | link_to: blog.url ]_begin{% endcomment %}{% include 'ly-title' with blog %}{{ ly_translation | link_to: blog.url }}{% comment %}ly_code_replace_end{% endcomment %}
+      <span aria-hidden="true">›</span>
+      <span>{{ current_tags | join: " + " }}</span>
+    {% else %}
+    <span>{% comment %}ly_code_replace_for_[ blog.title ]_begin{% endcomment %}{% include 'ly-title' with blog %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}</span>
+    {% endif %}
+  {% elsif template == 'article' %}
+    <span aria-hidden="true">›</span>
+    {% comment %}ly_code_replace_for_[ blog.title | link_to: blog.url ]_begin{% endcomment %}{% include 'ly-title' with blog %}{{ ly_translation | link_to: blog.url }}{% comment %}ly_code_replace_end{% endcomment %}
+    <span aria-hidden="true">›</span>
+    <span>{% comment %}ly_code_replace_for_[ article.title ]_begin{% endcomment %}{% include 'ly-title' with article %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}</span>
+  {% elsif template == 'cart' %}
+    {% if cart.attributes.language == 'ly27068' %}
+      <span aria-hidden="true">›</span>
+      <span><ly-as-4182690>Tu carrito</ly-as-4182690></span>
+    {% else %}
+      <span aria-hidden="true">›</span>
+      <span><ly-as-4321469>Shopping Cart</ly-as-4321469></span>
+    {% endif %}
+  {% elsif template == 'customers/addresses' %}
+    {% if cart.attributes.language == 'ly27068' %}
+      <span aria-hidden="true">›</span>
+      <span><ly-as-4891482>Direcciones</ly-as-4891482></span>
+    {% else %}
+      <span aria-hidden="true">›</span>
+      <span>{{ langify_title }}</span>
+    {% endif %}
+  {% elsif template == 'customers/account' %}
+    {% if cart.attributes.language == 'ly27068' %}
+      <span aria-hidden="true">›</span>
+      <span><ly-as-4891483>Pedidos</ly-as-4891483></span>
+    {% else %}
+      <span aria-hidden="true">›</span>
+      <span>{{ langify_title }}</span>
+    {% endif %}
+  {% elsif template == 'customers/login' %}
+    {% if cart.attributes.language == 'ly27068' %}
+      <span aria-hidden="true">›</span>
+      <span><ly-as-4891484>Entrar</ly-as-4891484></span>
+    {% else %}
+      <span aria-hidden="true">›</span>
+      <span>{{ langify_title }}</span>
+    {% endif %}
+  {% elsif template == 'customers/reset_password' %}
+    {% if cart.attributes.language == 'ly27068' %}
+      <span aria-hidden="true">›</span>
+      <span><ly-as-4891485>Restablecer la contraseña</ly-as-4891485></span>
+    {% else %}
+      <span aria-hidden="true">›</span>
+      <span>{{ langify_title }}</span>
+    {% endif %}
+  {% elsif template == 'customers/register' %}
+    {% if cart.attributes.language == 'ly27068' %}
+      <span aria-hidden="true">›</span>
+      <span><ly-as-4891486>Crear una cuenta</ly-as-4891486></span>
+    {% else %}
+      <span aria-hidden="true">›</span>
+      <span>{{ langify_title }}</span>
+    {% endif %}
+  {% else %}
+   <span aria-hidden="true">›</span>
+   <span>{{ langify_title }}</span>
+  {% endif %}
+</nav>
+{% endunless %}

@@ -1,0 +1,88 @@
+{% comment %}ly_global_begin{% endcomment %}{% include 'ly-global' %}{% comment %}ly_global_end{% endcomment %}
+<div class='section productosHome'>
+  {% for block in section.blocks %}
+    <div class="productHome tobeanimatedUp" {{ block.shopify_attributes }}>
+      {%- assign product = all_products[block.settings.product] -%}
+      {% case block.type %}
+        {% when 'product' %}
+          <a class='product' href='{{product.url}}'>
+            <img class="{% if product.tags contains 'SUNGLASSES' %} widep {% else %} portraitp {% endif %}" src='{{product.featured_image | product_img_url: "400x" }}'/>
+          </a>
+          <a class='name' href='{{product.url}}'>{% comment %}ly_code_replace_for_[product.title]_begin{% endcomment %}{% include 'ly-title' with product %}{{ly_translation}}{% comment %}ly_code_replace_end{% endcomment %}</a>
+          {% if cart.attributes.language == 'ly27068' %}
+            <a class='price' href='{{product.url}}'>
+              {% if product.price_varies %}<ly-as-4182622>From</ly-as-4182622>{% endif %}
+                {{ product.price | money_with_currency | remove: ".00" }}
+                {% if on_sale %}
+                <s class="compare-at-price">{{ product.compare_at_price | money_with_currency }}</s>
+              {% endif %}
+            </a>
+          {% else %}
+            <a class='price' href='{{product.url}}'>
+              {% if product.price_varies %}<ly-as-4182622>From</ly-as-4182622>{% endif %}
+                {{ product.price | money | remove: ".00" }}
+                {% if on_sale %}
+                <s class="compare-at-price">{{ product.compare_at_price | money }}</s>
+              {% endif %}
+            </a> 
+          {% endif %}
+          
+
+          
+      {% endcase %}
+    </div>
+  {% endfor %}
+  <div style='clear:both;'></div>
+  <div class='collections'>
+    <div class='showAll'>
+      <a href='/collections/all'><ly-as-4182623>View More</ly-as-4182623></a>
+    </div>
+  </div>
+</div>
+
+
+
+{% schema %}
+  {
+    "name": "Productos",
+    "max_blocks": 9,
+    "settings": [
+      {
+        "type": "select",
+        "id": "productsInPage",
+        "label": "Productos visibles",
+        "options": [
+          { "value": "3", "label": "3" },
+          { "value": "6", "label": "6" },
+          { "value": "9", "label": "9" }
+        ],
+        "default": "6"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "product",
+        "name": "Producto",
+        "settings": [
+          {
+            "type": "product",
+            "id": "product",
+            "label": "Producto"
+          }
+        ]
+      }
+    ],
+    "presets": [{
+      "name": "Productos",
+      "category": "Productos",
+      "settings": {
+      }
+    }]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

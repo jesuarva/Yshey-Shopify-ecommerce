@@ -1,0 +1,66 @@
+<!-- JESUARVA -->
+<p>Part picker block</p>
+
+<span>Top 25€</span>
+<input part="top" type="radio" name="part-picker" id="top-xs" value="xs" style="visibility:visible; display:inline-flex;">
+<label style="display:inline-flex;" for="top-xs">XS</label>
+<input part="top" type="radio" name="part-picker" id="top-s" value="xs" style="visibility:visible; display:inline-flex;">
+<label style="display:inline-flex;" for="top-s">S</label>
+<input part="top" type="radio" name="part-picker" id="top-m" value="s" style="visibility:visible; display:inline-flex;">
+<label style="display:inline-flex;" for="top-m">M</label>
+<input part="top" type="radio" name="part-picker" id="top-l" value="m" style="visibility:visible; display:inline-flex;">
+<label style="display:inline-flex;" for="top-l">L</label>
+<input part="top" type="radio" name="part-picker" id="top-hiden" checked value="l" style="visibility:visible; display:inline-flex;">
+<label style="display:none;" for="top-hidden">null</label>
+<br>
+<span>Bottom 20€</span>
+<input part="bottom" type="radio" name="part-picker" id="bottom-xs" value="xs" style="visibility:visible; display:inline-flex;">
+<label style="display:inline-flex;" for="bottom-xs">XS</label>
+<input part="bottom" type="radio" name="part-picker" id="bottom-s" value="s" style="visibility:visible; display:inline-flex;">
+<label style="display:inline-flex;" for="bottom-s">S</label>
+<input part="bottom" type="radio" name="part-picker" id="bottom-m" value="m" style="visibility:visible; display:inline-flex;">
+<label style="display:inline-flex;" for="bottom-m">M</label>
+<input part="bottom" type="radio" name="part-picker" id="bottom-l" value="l" style="visibility:visible; display:inline-flex;">
+<label style="display:inline-flex;" for="bottom-l">L</label>
+<input part="bottom" type="radio" name="part-picker" id="bottom-hiden" checked value="l" style="visibility:visible; display:inline-flex;">
+<label style="display:none;" for="bottom-hidden">null</label>
+
+<script>
+var sizes = ["xs","s","m","l"];
+var selectTop = function () {
+  for (var i = 0; i < 4; i++) {
+    $('input#swatch-0-'+sizes[i]).removeAttr('checked');
+    $('.selector-wrapper select[id="product-select-option-0"] option[value="'+sizes[i]+'"]').attr('selected', false);
+    $('.selector-wrapper select[id="product-select-option-1"] option[value="'+sizes[i]+'"]').attr('selected', false);
+  }
+  // $('input#swatch-0-l').attr('checked', 'true');
+  $('input#swatch-0-l').trigger('click');
+  // $('.selector-wrapper select[id="product-select-option-0"] option[value="l"]').attr('selected', true);
+  // $('input#swatch-1-m').attr('checked', 'true');
+  $('input#swatch-1-m').trigger('click');
+  // $('.selector-wrapper select[id="product-select-option-1"] option[value="m"]').attr('selected', true);
+  console.log('selectTop launched');
+}
+var selectBottom = function () {
+  for (var i = 0; i < 4; i++) {
+    $('input#swatch-0-'+sizes[i]).removeAttr('checked');
+    $('.selector-wrapper select[id="product-select-option-0"] option[value="'+sizes[i]+'"]').attr('selected', false);
+    $('.selector-wrapper select[id="product-select-option-1"] option[value="'+sizes[i]+'"]').attr('selected', false);
+  }
+
+  $('input#swatch-0-xs').attr('checked', 'true');
+  $('input#swatch-1-xs').attr('checked', 'true');
+  console.log('selectBottom launched');
+}
+
+$( document ).ready(function(){
+  console.log('part-picker JS is here');
+  alert('part-picker JS is here')
+  $('input[part="top"]').on('click', selectTop);
+  $('input[part="bottom"]').on('click', selectBottom);;
+});
+</script>
+
+
+
+<!-- END JESUARVA -->

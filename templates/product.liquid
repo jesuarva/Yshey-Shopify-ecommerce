@@ -1,0 +1,1292 @@
+{% if collection.title == 'Part Picker' %}
+
+<!-- CODE FOR PRODUCTS: HE ONES THAT BELONGS TO PART-PICKER COLLECTION -->
+<div id="for-all-products-in-collection-partpicker">
+
+
+  {% comment %}ly_global_begin{% endcomment %}{% include 'ly-global' %}{% comment %}ly_global_end{% endcomment %}
+
+  {% comment %} TRADUCCIONES DEL BOTÓN COMPRAR {% endcomment %}
+  {% if cart.attributes.language == 'ly27068' %}
+    {% assign add_to_cart = 'Añadir al carrito' %}
+    {% assign add_to_cartZoom = 'Comprar ahora' %}
+    {% assign unavailable = 'No disponible' %}
+    {% assign selectOption = '* por favor selecciona una talla' %}
+    {% assign sold_out = 'Agotado' %}
+  {% else %}
+    {% assign add_to_cart = 'Add to cart' %}
+    {% assign add_to_cartZoom = 'Buy now' %}
+    {% assign unavailable = 'Unavailable' %}
+    {% assign selectOption = '* please select size option' %}
+    {% assign sold_out = 'Sold out' %}
+  {% endif %}
+
+
+  {% comment %} DIVIDE LAS TAGS A USAR {% endcomment %}
+  {% assign tagsExclude = 'Azul,Amarillo,Verde,Naranja,Rosa,Negro,Blanco,Chocolate,Lila,Triangle,Bandeau,Balconet,Push up,One Piece' | split: ',' %}
+
+  {% comment %}
+  Asignamos variable para el tag de combinación del producto
+  {% endcomment %}
+  {% comment %}
+  {% assign collectionCombination = null %}
+  {% for collectionSplit in product.collections %}
+    {% if collectionSplit.title contains 'Combination' %}
+      {% assign collectionCombination = collectionSplit %}
+    {% endif %}
+  {% endfor %}
+  {% endcomment %}
+
+  {% comment %} SEPARADOR DE TAGS ACCESORIES {% endcomment %}
+  {% assign itemTag = null %}
+  {% for tagSplit in product.tags %}
+    {% unless tagsExclude contains tagSplit %}
+      {% if tagSplit contains 'Accessories' %}
+        {% assign itemTag = tagSplit %}
+      {% endif %}
+    {% endunless %}
+  {% endfor %}
+
+
+  <div class="product" itemscope itemtype="http://schema.org/Product">
+    <meta itemprop="url" content="{{ shop.url }}{{ product.url }}" />
+    <meta itemprop="image" content="{{ product | img_url: 'grande' }}" />
+    <form action="/cart/add" method="post" enctype="multipart/form-data">
+
+      <div class="product-photos">
+      {% comment %} SI NO HAY FOTO {% endcomment %}
+      {% if product.images.size == 0 %}
+        <div class="product-photo-container">
+          <img src="{{ '' | img_url: 'grande' }}" alt="" />
+        </div>
+      {% else %}
+
+        {% comment %} FOTO DESTACADA DE VARIANTE {% endcomment %}
+        {% assign featured_image = product.selected_variant.featured_image | default: product.featured_image %}
+        <script type="text/javascript">
+          {{ featured_image | json }}
+        </script>
+        {% comment %}
+        <div class='fotosProdMovil'>
+          <div id="slides">
+            {% for image in product.images %}
+                <img src="{{ image | img_url: '318x' }}" alt="{{ image.alt | escape }}" />
+            {% endfor %}
+          </div>
+        </div>
+        {% endcomment %}
+
+        {% comment %} GRID DE FOTOS DESKTOP {% endcomment %}
+        <ul class="product-photo-thumbs clearfix grid">
+          {% for image in product.images %}
+          <li class="product-photo-thumb two-per-row">
+            <a href="{{ image | img_url: '1024x1024' }}">
+              <img src="{{ image | img_url: '900x' }}" alt="{{ image.alt | escape }}" />
+            </a>
+          </li>
+          {% endfor %}
+        </ul>
+        {% comment %} GRID DE FOTOS MOVIL SWIPER . js {% endcomment %}
+        <div class="swiper-container">
+          <div class="swiper-wrapper">
+            {% for image in product.images %}
+                <div style="background-image: url({{ image | img_url: '318x' }});" class="swiper-slide"></div>
+            {% endfor %}
+          </div>
+          <div class="swiper-pagination"></div>
+        </div>
+
+      {% endif %}
+
+      </div>
+
+
+
+
+      {% comment %} FICHA DERECHA {% endcomment %}
+      <div id='select-variant' class="product-details">
+
+        {% if collection %}
+          {% if collection.previous_product or collection.next_product %}
+          <div>
+          {% if collection.previous_product %}
+            {% capture prev_url %}{{ collection.previous_product}}#content{% endcapture %}
+            <span class="left">{{ '<ly-as-4182883>Back</ly-as-4182883>' | link_to: prev_url }}</span>
+          {% endif %}
+          {% if collection.next_product %}
+            {% capture next_url %}{{ collection.next_product}}#content{% endcapture %}
+            <span class="right">{{ '<ly-as-4182884>Next</ly-as-4182884>' | link_to: next_url }}</span>
+          {% endif %}
+          </div>
+          {% endif %}
+        {% endif %}
+        <h1 itemprop="name">{% comment %}ly_code_replace_for_[ product.title ]_begin{% endcomment %}{% include 'ly-title' with product %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}</h1>
+
+
+        {% comment %}
+          All themes by Shopify should support the Product Reviews app out of the box.
+          https://apps.shopify.com/product-reviews
+        {% endcomment %}
+        <div id="shopify-product-reviews" data-id="{{ product.id }}">{% comment %}ly_code_replace_for_[ product.metafields.spr.reviews ]_begin{% endcomment %}{% assign language = cart.attributes["language"] %}{% if language == nil %}{% assign language = shop.metafields["languages"]["default"] %}{% endif %}{% assign ns = language | append: 'spr' %}{% assign key = 'reviews' %}{% if product.metafields[ns][key] %}{% assign ly_translation = product.metafields[ns][key] %}{% else %}{% assign ly_translation =  product.metafields.spr.reviews  %}{% endif %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}</div>
+
+        <div id="product-price" itemprop="offers" itemscope itemtype="http://schema.org/Offer" class="delta">
+          <meta itemprop="priceCurrency" content="{{ shop.currency }}" />
+          {% if product.available %}
+          <link itemprop="availability" href="http://schema.org/InStock" />
+          {% else %}
+          <link itemprop="availability" href="http://schema.org/OutOfStock" />
+          {% endif %}
+          <p>
+            {% assign variant = product.selected_or_first_available_variant %}
+            {% if product.compare_at_price > product.price %}
+            <span class="product-price on-sale" itemprop="price">
+              {% if cart.attributes.language == 'ly27068' %}
+                {{ variant.price | money_with_currency }}
+              {% else %}
+                {{ variant.price | money }}
+              {% endif %}
+            </span>
+            <s class="product-compare-price">
+              {% if cart.attributes.language == 'ly27068' %}
+                {{ variant.compare_at_price | money_with_currency }}
+              {% else %}
+                {{ variant.compare_at_price | money }}
+              {% endif %}
+            </s>
+            {% else %}
+            <span class="product-price" itemprop="price">
+              {% if product.price_varies %}From{% endif %}
+                {% if cart.attributes.language == 'ly27068' %}
+                  {{ product.price | money_with_currency | remove: ".00" }}
+                {% else %}
+                  {{ product.price | money | remove: ".00" }}
+                {% endif %}
+                {% if on_sale %}
+                <s class="compare-at-price">{{ product.compare_at_price | money }}</s>
+              {% endif %}
+            </span>
+            {% endif %}
+            <span class='setTopBottom'></span>
+          </p>
+        </div>
+        {% capture desc %}
+          {% comment %}ly_code_replace_for_[ product.description ]_begin{% endcomment %}{% include 'ly-description' with product %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}
+        {% endcapture %}
+        {% assign short_desc = desc | split: '<!-- split -->' | first %}
+        {% assign long_desc = desc | split: '<!-- split -->' | last %}
+
+        <div id="product-description" class="rte" itemprop="description">
+          {{ short_desc }}
+        </div>
+
+        {% comment %} FRASE TATUAJE {% endcomment %}
+        <div class='tatuaje'>
+          <!--
+          <p><ly-as-4368685>We will send you an YSHEYGirl set, a see-through pouch & cute golden tattoos with every order!</ly-as-4368685></p>
+          <br>
+          <br>
+          <!--
+          <p><ly-as-4331999>If the size you are looking for is out of stock, send us an email or click on</ly-as-4331999> </p>
+            <div class="hasWindow">
+              <a href=""><ly-as-4332000>CAN WE HELP YOU?</ly-as-4332000></a>
+              <div class='window' style='display:none;'>
+                <div class='title'>
+                  {% comment %}ly_code_replace_for_[ pages.need-some-help.title ]_begin{% endcomment %}{% include 'ly-title' with pages.need-some-help %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}
+                </div>
+                <div class='content'>
+                  {% comment %}ly_code_replace_for_[ pages.need-some-help.content ]_begin{% endcomment %}{% include 'ly-content' with pages.need-some-help %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}
+                </div>
+              </div>
+            </div>
+            <p><ly-as-4332001>and we will contact you when it is back in stock.</ly-as-4332001></p>
+          </p>
+          -->
+        </div>
+
+        {% comment %} Asigna hide_default_title para uso Shopify {% endcomment %}
+        {% assign hide_default_title = false %}
+        {% if product.variants.size == 1 and product.variants.first.title contains 'Default' %}
+          {% assign hide_default_title = true %}
+        {% endif %}
+
+        {% comment %} VARIANTES {% endcomment %}
+        <div id="product-variants" class="masUnidades {% if hide_default_title %} hidden{% endif %}">
+          <select id="product-select" name="id" {% if product.options.[0] == 'Title' && product.options.[0] == null %} style="visibility:hidden;" {% endif %}>
+          <option value='' selected="selected"></option>
+          {% for variant in product.variants %}
+            <option{% if forloop.length <= 1 %}
+              <option {% if variant == product.selected_or_first_available_variant %} selected="selected" {% endif %} data-sku="{{ variant.sku }}" value="{{ variant.id }}">{% comment %}ly_code_replace_for_[ variant.title ]_begin{% endcomment %}{% include 'ly-title' with variant %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %} - {{ variant.price | money_with_currency }}</option>
+            {% endif %}
+             <ly-as-4182886>value="</ly-as-4182886>{{ variant.id }}">
+            {% comment %}ly_code_replace_for_[ variant.title ]_begin{% endcomment %}{% include 'ly-title' with variant %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %} - {{ variant.price | money }}
+            </option>
+          {% endfor %}
+          </select>
+
+
+            {% if product.available and product.variants.size > 1 %}
+              <div class="part-picker-swatch" style="display:;">
+              {% for option in product.options %}
+                {% include 'swatch' with option %}
+              {% endfor %}
+              </div>
+
+              <div class="part-picker">
+                    {% include 'part-picker' %}
+              </div>
+            {% endif %}
+
+
+
+
+
+          <div class='alertAdd'></div>
+          <span class='ultimasUd'><ly-as-4182887>Last units</ly-as-4182887></span>
+        </div>
+
+        {% comment %} BOTÓN COMPRAR {% endcomment %}
+        <div class='btn_add'>
+          <div class='enlacesBag'>
+            <div class='hasWindow'>
+              {% comment %}
+              <a href="" id='sizing'>Sizing</a>
+              {% endcomment %}
+              <a class='sizingBtn' href="pages/perfect-fit-guarantee">
+                <ly-as-4182888>Sizing</ly-as-4182888>
+              </a>
+              <div class='window' style='display:none;'>
+                <div class='title'>
+                  {% comment %}ly_code_replace_for_[ pages.perfect-fit-guarantee.title ]_begin{% endcomment %}{% include 'ly-title' with pages.perfect-fit-guarantee %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}
+                </div>
+                <div class='content'>
+                  {% comment %}ly_code_replace_for_[ pages.perfect-fit-guarantee.content ]_begin{% endcomment %}{% include 'ly-content' with pages.perfect-fit-guarantee %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}
+                </div>
+              </div>
+            </div>
+
+            <a class='description' href=""><ly-as-4182889>Description</ly-as-4182889></a>
+          </div>
+          <div id="product-add">
+            <input type="submit" name="add" id="add" class="primary button" value="{{ add_to_cart | escape }}">
+            <a class='btnAddPr'><div style="position:absolute; left:0; right:0; top:0; bottom:0; cursor: pointer; display:none;" id="hideInput"></div></a>
+          </div>
+          <div class='enlacesBag'>
+            <div class="hasWindow">
+              <a class='enlb paylater' href="/pages/pay-later">
+                  <ly-as-4182890>Pay Later</ly-as-4182890>
+              </a>
+              <div class='window' style='display:none;'>
+                <div class='title'>
+                  {% comment %}ly_code_replace_for_[ pages.pay-later.title ]_begin{% endcomment %}{% include 'ly-title' with pages.pay-later %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}
+                </div>
+                <div class='content'>
+                  {% comment %}ly_code_replace_for_[ pages.pay-later.content ]_begin{% endcomment %}{% include 'ly-content' with pages.pay-later %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}
+                </div>
+              </div>
+            </div>
+            <div class="hasWindow">
+              <a class='enlb shipping' href="/pages/free-returns-exchanges">
+                <ly-as-4241518>Worldwide Shipping</ly-as-4241518>
+              </a>
+              <div class='window' style='display:none;'>
+                <div class='title'>
+                  {% comment %}ly_code_replace_for_[ pages.24h-shipping.title ]_begin{% endcomment %}{% include 'ly-title' with pages.24h-shipping %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}
+                </div>
+                <div class='content'>
+                  {% comment %}ly_code_replace_for_[ pages.24h-shipping.content ]_begin{% endcomment %}{% include 'ly-content' with pages.24h-shipping %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {% comment %} ZONA FACEBOOK WHATSAPP {% endcomment %}
+        <div class="shareProduct">
+          <div class='iconShare'>
+            <a href="whatsapp://send?text=YSHEY | {% comment %}ly_code_replace_for_[product.title]_begin{% endcomment %}{% include 'ly-title' with product %}{{ly_translation}}{% comment %}ly_code_replace_end{% endcomment %}. {{ shop.url }}{{ product.url }}" data-action="share/whatsapp/share"><img src="{% comment %}ly_asset_replace_for_[ 'whatsapp.svg' | asset_url ]_begin{% endcomment %}{% assign ly_asset = 'whatsapp.svg' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}"></a>
+            <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u={{ shop.url }}{{ product.url }}"><img src="{% comment %}ly_asset_replace_for_[ 'facebookSh.svg' | asset_url ]_begin{% endcomment %}{% assign ly_asset = 'facebookSh.svg' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}"></a>
+          </div>
+          <h4><ly-as-4750969>Like it. Share it.</ly-as-4750969></h4>
+        </div>
+
+
+
+
+      </div><!-- .product-details -->
+
+  <!--Spice Product Kits Child Product Lists Starts-->
+  <div id="spicegems_metafields_data_div" data-default_variant="{{product.selected_or_first_available_variant.id}}" style="display:none;visibility:hidden;">
+  {{ product.metafields['spice_product_kits'] | json }}
+  </div>
+  <!--Spice Product Kits Child Product Lists End-->
+
+      <div class='fotos-zoom'>
+
+        {% comment %} FOTOS ZOOM © . js {% endcomment %}
+        <div class="swiper-container2">
+          <div class="swiper-wrapper">
+            {% for image in product.images %}
+                <div style="background-image: url({{ image | img_url: '1400x' }});" class="swiper-slide"></div>
+            {% endfor %}
+          </div>
+        </div>
+        <a class='prev swiper-button-prev'><span></span></a>
+        <a class='next swiper-button-next'><span></span></a>
+        <a class='close'></a>
+      </div>
+      {% comment %} Boton comprar oculto movil/zoom {% endcomment %}
+        <div class='bandaBajaDesc'>
+          <div class='centroBtn'>
+            <div id="product-add">
+              <input type="submit" name="add" id="addT" class="primary button" value="{{ add_to_cart | escape }}">
+              <input type="submit" name="add" id="addT" class="primary button zoomB" value="{{ add_to_cartZoom | escape }}">
+              <a class='btnAddPr'><div style="position:absolute; left:0; right:0; top:0; bottom:0; cursor: pointer; display:none;" id="hideInputT"></div></a>
+            </div>
+            <span class="product-price" itemprop="price">
+              {% if product.price_varies %}<ly-as-4182885>From</ly-as-4182885>{% endif %}
+                {{ product.price | money | remove: ".00" }}
+                {% if on_sale %}
+                <s class="compare-at-price">{{ product.compare_at_price | money }}</s>
+              {% endif %}
+            </span>
+          </div>
+        </div>
+    </form>
+
+  <!--Spice Product Kits lineitems script Starts-->
+
+  {{ 'https://product-kits.spicegems.com/bundle/script-tags/6c0d13d3ad6cc317017872e51d01b238.js?v=dfhjfhfjhhfjdfewqpt&shop=yshey.myshopify.com' | script_tag }}
+
+  <!--Spice Product Kits lineitems script End-->
+
+  </div>
+
+
+
+  {% comment %}
+  COMPLETE PRODUCT
+  {% endcomment %}
+  {% comment %} BUSCAMOS TAG Combination {% endcomment %}
+  {% assign tagAccessories = null %}
+  {% for accessoriesTag in product.tags %}
+    {% unless tagsExclude contains accessoriesTag %}
+      {% if accessoriesTag contains 'Accessories' %}
+        {% unless tagsExclude contains collectionCombination.title %}
+          {% assign itemTag = tagSplit %}
+          {% assign tagAccessories = accessoriesTag | handle %}
+        {% endunless %}
+      {% endif %}
+    {% endunless %}
+  {% endfor %}
+
+  {% comment %}
+  ACCESSORIES PRODUCT
+  {% endcomment %}
+  {% if product.type == 'Biquini' %}
+    {% unless tagAccessories == null %}
+      <div class="combinationsProd">
+        <h2><ly-as-4182893>Complete the look</ly-as-4182893></h2>
+        <ul class="grid clearfix">
+          {% for product in collections[tagAccessories].products %}
+            {% include 'product-grid-item' with products_per_row %}
+          {% endfor %}
+        </ul>
+      </div>
+    {% endunless %}
+  {% endif %}
+
+
+
+
+  {% comment %} BUSCAMOS TAG Combination {% endcomment %}
+  {% assign tagCombination = null %}
+  {% for combinationTag in product.tags %}
+    {% unless tagsExclude contains combinationTag %}
+      {% if combinationTag contains 'Combination' %}
+        {% unless tagsExclude contains collectionCombination.title %}
+          {% assign itemTag = tagSplit %}
+          {% assign tagCombination = combinationTag | handle %}
+        {% endunless %}
+      {% endif %}
+    {% endunless %}
+  {% endfor %}
+
+
+
+  {% comment %}
+  COMBINATIONS PRODUCT
+  {% endcomment %}
+  {% if product.type == 'Biquini' or 'Accessories' %}
+    {% unless tagCombination == null %}
+      <div class="combinationsProd">
+        <h2><ly-as-4182895>Style combinations for you</ly-as-4182895></h2>
+        <ul class="grid clearfix">
+          {% for product in collections[tagCombination].products %}
+            {% include 'product-grid-item' with products_per_row %}
+          {% endfor %}
+        </ul>
+      </div>
+    {% endunless %}
+  {% endif %}
+
+
+  {% comment %}
+    Adding support for product options. See here for details:
+    http://docs.shopify.com/support/your-website/themes/can-i-make-my-theme-use-products-with-multiple-options
+  {% endcomment %}
+
+  <script>
+
+  // Cuando cambia la variante
+  var selectCallback = function(variant, selector) {
+
+    //Borra si hay alerta puesta
+    $('.alertAdd').html('');
+
+    var topBottom = 'Top & Bottom'
+    {% if product.tags contains 'One Piece' %}
+      topBottom = 'One Piece';
+    {% endif %}
+
+    //Si existe variante
+    if (variant) {
+      var form = jQuery('#' + selector.domIdPrefix).closest('form');
+      $( '#product-variants' ).addClass('masUnidades');
+      for (var i=0,length=variant.options.length; i<length; i++) {
+        var radioButton = form.find('.swatch[data-option-index="' + i + '"] :radio[value="' + variant.options[i] +'"]');
+        if (radioButton.hasClass('agotado')) {
+          $( '#product-variants' ).removeClass('masUnidades');
+        }
+      }
+
+
+      // Swap image.
+      if (variant.featured_image) {
+        var newImage = variant.featured_image; // New image object.
+        var mainImageDomEl = jQuery('.product-photo-container img')[0]; // DOM element of main image we need to swap.
+        Shopify.Image.switchImage(newImage, mainImageDomEl, switchImage); // Define switchImage (the callback) in your theme's JavaScript file.
+
+      }
+
+      // Selected a valid variant that is available.
+      if (variant.available) {
+
+        // Enabling add to cart button.
+        jQuery('#add, #addT').removeClass('disabled').prop('disabled', false).val({{add_to_cart | json}});
+        jQuery('.button.zoomB').removeClass('disabled').prop('disabled', false).val({{add_to_cartZoom | json}});
+
+        $('#hideInput, #hideInputT').css('display', 'none');
+        // If item is backordered yet can still be ordered, we'll show special message.
+        if (variant.inventory_management && variant.inventory_quantity <= 0) {
+          jQuery('#selected-variant').html({% comment %}ly_code_replace_for_[ product.title | json ]_begin{% endcomment %}{% include 'ly-title' with product %}{{ ly_translation | json }}{% comment %}ly_code_replace_end{% endcomment %}{% unless hide_default_title %} + ' - ' + variant.title{% endunless %});
+          jQuery('#backorder').removeClass("hidden");
+        } else {
+          jQuery('#backorder').addClass("hidden");
+        }
+
+      } else {
+        // Variant is sold out.
+        jQuery('#backorder').addClass('hidden');
+        jQuery('#add, #addT').val({{ sold_out | json }}).addClass('disabled').prop('disabled', true);
+      }
+      if ( {{ cart.attributes.language | json }} == 'ly27068' ) {
+        var variantPrice = Shopify.formatMoney(variant.price, "{{ shop.money_with_currency_format }}").replace('.00', '');
+      } else {
+        var variantPrice = Shopify.formatMoney(variant.price, "{{ shop.money_format }}").replace('.00', '');
+      }
+
+      // Whether the variant is in stock or not, we can update the price and compare at price.
+      if ( variant.compare_at_price > variant.price ) {
+        jQuery('#product-price').html('<span class="product-price on-sale">'+ variantPrice +'</span>'+' <s class="product-compare-price">'+variant.compare_at_price+ '</s>');
+      } else {
+        jQuery('#product-price').html('<span class="product-price">'+variantPrice+ ' </span><span class="clearIfN">' + topBottom + '</span>' );
+      }
+
+    } else {
+      $('#hideInput, #hideInputT').css('display', 'inherit');
+      // variant doesn't exist.
+      if ( {{ cart.attributes.language | json }} == 'ly27068' ) {
+       jQuery('#product-price').html('<span class="product-price">{{product.price | money_with_currency | remove: ".00" }} </span><span class="clearIfN">' + topBottom + '</span>' );
+      } else {
+        jQuery('#product-price').html('<span class="product-price">{{product.price | money | remove: ".00" }} </span><span class="clearIfN">' + topBottom + '</span>' );
+      }
+      // SOLD OUT si no hay existencias
+
+      jQuery('#backorder').addClass('hidden');
+      jQuery('#add, #addT').val({{add_to_cart | json}}).addClass('disabled').prop('disabled', true);
+      jQuery('.button.zoomB').val({{add_to_cartZoom | json}}).addClass('disabled').prop('disabled', true);
+      {% if product.available == false %}
+        jQuery('#backorder').addClass('hidden');
+        jQuery('#add, #addT').val({{ sold_out | json }}).addClass('disabled').prop('disabled', true);
+      {% endif %}
+    }
+
+    // RADIOBUTTONS en vez de selector. -BEGIN SWATCHES-
+    if (variant) {
+      var form = jQuery('#' + selector.domIdPrefix).closest('form');
+      for (var i=0,length=variant.options.length; i<length; i++) {
+        var radioButton = form.find('.swatch[data-option-index="' + i + '"] :radio[value="' + variant.options[i] +'"]');
+        if (radioButton.size()) {
+          radioButton.get(0).checked = true;
+        }
+
+      }
+    }
+    // END SWATCHES
+
+  };
+
+
+  jQuery(function($) {
+    // Añade variantes
+    {% if product.options.[0] != 'Title' && product.options.[0] != null %}
+      new Shopify.OptionSelectors('product-select', { product: {{ product | json }}, onVariantSelected: selectCallback, enableHistoryState: true });
+
+      // Add label if only one product option and it isn't 'Title'.
+      {% if product.options.size == 1 and product.options.first != 'Title' %}
+        $('.selector-wrapper:eq(0)').prepend('<label>{{ product.options.first }}</label>');
+      {% endif %}
+
+    {% endif %}
+
+
+
+    /* Esconde Batón Precio cuando está en la zona de descripción */
+    $(document).scroll(function() {
+      var scrollBottom = $(window).height() + $(document).scrollTop();
+      if ( $('.btn_add').length ) {
+        if ( scrollBottom > $('.btn_add').offset().top && $(document).scrollTop() < $('.btn_add').offset().top ) {
+          if ( ! $('html').hasClass('zoomPhoto') ) {
+            $('body').addClass('hideAdd');
+          }
+        } else {
+          $('body').removeClass('hideAdd');
+        }
+      }
+    });
+
+
+
+    /* Lightbox DESCRIPTION */
+    $('.enlacesBag .description').click(function(e){
+      var short_desc = {{ short_desc | json }};
+      var long_desc = {{ long_desc | json }};
+      if ( long_desc != undefined || short_desc != undefined ) {
+        $('body').addClass('preHtmlAjax');
+        setTimeout(function(){
+          $('#htmlAjax').append('<img src="{% comment %}ly_asset_replace_for_[ "icon-seachx.svg" | asset_url ]_begin{% endcomment %}{% assign ly_asset = "icon-seachx.svg" %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}" class="close">');
+          $('#htmlAjax').append('<h1 class="title">{% comment %}ly_code_replace_for_[ product.title ]_begin{% endcomment %}{% include 'ly-title' with product %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}</h1>');
+          $('#htmlAjax').append(short_desc + long_desc);
+          $('body').addClass('htmlAjax');
+        }, 100);
+      }
+      e.preventDefault();
+    });
+
+
+
+    /* Pide seleccionar una opción si no ha seleccionado Top o bottom */
+    $("#hideInput, #hideInputT").click(function() {
+      if ( $('#add, #addT').hasClass('disabled') && $('#add, #addT').val() != {{ sold_out | json }} ) {
+        if ( $('html').hasClass('zoomPhoto') ) {
+          $('html').removeClass('zoomPhoto');
+        }
+        $('.alertAdd').html({{ selectOption | json }});
+
+      }
+    });
+
+
+    /* Sizing */
+    {% capture content %}{% include 'tablaTallas' %}{% endcapture %}
+    var content = {{ content | json }};
+    $('#sizing').click(function(e){
+      $('body').addClass('preHtmlAjax');
+      setTimeout(function(){
+        $('#htmlAjax').append('<img src="{% comment %}ly_asset_replace_for_[ "icon-seachx.svg" | asset_url ]_begin{% endcomment %}{% assign ly_asset = "icon-seachx.svg" %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}" class="close">');
+        $('#htmlAjax').append(content);
+        $('body').addClass('htmlAjax');
+      }, 100);
+      e.preventDefault();
+    });
+
+
+  });
+
+
+
+
+  Shopify.Image.preload({{ product.images | json }}, 'grande');
+  Shopify.Image.preload({{ product.images | json }}, '1024x1024');
+
+  </script>
+
+  <!-- Facebook Pixel Code -->
+  <script>
+    $(".product form").submit(function(){
+      fbq('track', 'AddToCart', {
+      content_ids: ['{{ product.id }}'],
+      content_type: 'product',
+      value: '{{ product.price | divided_by: 100 }}',
+      currency: 'EUR'
+     })
+    });
+    fbq('track', 'ViewContent', {
+      content_type: 'product',
+      content_ids: ['{{ product.id }}']
+    });
+  </script>
+  <!-- End Facebook Pixel Code -->
+</div>
+<!-- END CODE FOR PRODUCTS: HE ONES THAT BELONGS TO PART-PICKER COLLECTION -->
+
+<!-- <script>
+var selectTop = function () {
+  $('input#swatch-0-l').attr('checked', 'true');
+  $('input#swatch-1-m').attr('checked', 'true');
+  console.log('selectTop launched');
+}
+var selectBottom = function () {
+  $('input#swatch-0-xs').attr('checked', 'true');
+  $('input#swatch-1-xs').attr('checked', 'true');
+  console.log('selectBottom launched');
+}
+
+$( document ).ready(function(){
+  console.log('part-picker JS is here');
+  alert('part-picker JS is here')
+  $('input[part="top"]').on('click', selectTop);
+  $('input[part="bottom"]').on('click', selectBottom);;
+});
+</script> -->
+
+
+{% else %}
+
+  <!-- CODE FOR REGULAR PRODUCT: ALL EXCEPT THE ONES THAT BELONGS TO PART-PICKER COLLECTION -->
+  <div id="all-products-except-the-ones-in-collection-partpicker">
+
+
+    {% comment %}ly_global_begin{% endcomment %}{% include 'ly-global' %}{% comment %}ly_global_end{% endcomment %}
+
+    {% comment %} TRADUCCIONES DEL BOTÓN COMPRAR {% endcomment %}
+    {% if cart.attributes.language == 'ly27068' %}
+      {% assign add_to_cart = 'Añadir al carrito' %}
+      {% assign add_to_cartZoom = 'Comprar ahora' %}
+      {% assign unavailable = 'No disponible' %}
+      {% assign selectOption = '* por favor selecciona una talla' %}
+      {% assign sold_out = 'Agotado' %}
+    {% else %}
+      {% assign add_to_cart = 'Add to cart' %}
+      {% assign add_to_cartZoom = 'Buy now' %}
+      {% assign unavailable = 'Unavailable' %}
+      {% assign selectOption = '* please select size option' %}
+      {% assign sold_out = 'Sold out' %}
+    {% endif %}
+
+
+    {% comment %} DIVIDE LAS TAGS A USAR {% endcomment %}
+    {% assign tagsExclude = 'Azul,Amarillo,Verde,Naranja,Rosa,Negro,Blanco,Chocolate,Lila,Triangle,Bandeau,Balconet,Push up,One Piece' | split: ',' %}
+
+    {% comment %}
+    Asignamos variable para el tag de combinación del producto
+    {% endcomment %}
+    {% comment %}
+    {% assign collectionCombination = null %}
+    {% for collectionSplit in product.collections %}
+      {% if collectionSplit.title contains 'Combination' %}
+        {% assign collectionCombination = collectionSplit %}
+      {% endif %}
+    {% endfor %}
+    {% endcomment %}
+
+    {% comment %} SEPARADOR DE TAGS ACCESORIES {% endcomment %}
+    {% assign itemTag = null %}
+    {% for tagSplit in product.tags %}
+      {% unless tagsExclude contains tagSplit %}
+        {% if tagSplit contains 'Accessories' %}
+          {% assign itemTag = tagSplit %}
+        {% endif %}
+      {% endunless %}
+    {% endfor %}
+
+
+    <div class="product" itemscope itemtype="http://schema.org/Product">
+      <meta itemprop="url" content="{{ shop.url }}{{ product.url }}" />
+      <meta itemprop="image" content="{{ product | img_url: 'grande' }}" />
+      <form action="/cart/add" method="post" enctype="multipart/form-data">
+
+        <div class="product-photos">
+        {% comment %} SI NO HAY FOTO {% endcomment %}
+        {% if product.images.size == 0 %}
+          <div class="product-photo-container">
+            <img src="{{ '' | img_url: 'grande' }}" alt="" />
+          </div>
+        {% else %}
+
+          {% comment %} FOTO DESTACADA DE VARIANTE {% endcomment %}
+          {% assign featured_image = product.selected_variant.featured_image | default: product.featured_image %}
+          <script type="text/javascript">
+            {{ featured_image | json }}
+          </script>
+          {% comment %}
+          <div class='fotosProdMovil'>
+            <div id="slides">
+              {% for image in product.images %}
+                  <img src="{{ image | img_url: '318x' }}" alt="{{ image.alt | escape }}" />
+              {% endfor %}
+            </div>
+          </div>
+          {% endcomment %}
+
+          {% comment %} GRID DE FOTOS DESKTOP {% endcomment %}
+          <ul class="product-photo-thumbs clearfix grid">
+            {% for image in product.images %}
+            <li class="product-photo-thumb two-per-row">
+              <a href="{{ image | img_url: '1024x1024' }}">
+                <img src="{{ image | img_url: '900x' }}" alt="{{ image.alt | escape }}" />
+              </a>
+            </li>
+            {% endfor %}
+          </ul>
+          {% comment %} GRID DE FOTOS MOVIL SWIPER . js {% endcomment %}
+          <div class="swiper-container">
+            <div class="swiper-wrapper">
+              {% for image in product.images %}
+                  <div style="background-image: url({{ image | img_url: '318x' }});" class="swiper-slide"></div>
+              {% endfor %}
+            </div>
+            <div class="swiper-pagination"></div>
+          </div>
+
+        {% endif %}
+
+        </div>
+
+
+
+
+        {% comment %} FICHA DERECHA {% endcomment %}
+        <div id='select-variant' class="product-details">
+
+          {% if collection %}
+            {% if collection.previous_product or collection.next_product %}
+            <div>
+            {% if collection.previous_product %}
+              {% capture prev_url %}{{ collection.previous_product}}#content{% endcapture %}
+              <span class="left">{{ '<ly-as-4182883>Back</ly-as-4182883>' | link_to: prev_url }}</span>
+            {% endif %}
+            {% if collection.next_product %}
+              {% capture next_url %}{{ collection.next_product}}#content{% endcapture %}
+              <span class="right">{{ '<ly-as-4182884>Next</ly-as-4182884>' | link_to: next_url }}</span>
+            {% endif %}
+            </div>
+            {% endif %}
+          {% endif %}
+          <h1 itemprop="name">{% comment %}ly_code_replace_for_[ product.title ]_begin{% endcomment %}{% include 'ly-title' with product %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}</h1>
+
+
+          {% comment %}
+            All themes by Shopify should support the Product Reviews app out of the box.
+            https://apps.shopify.com/product-reviews
+          {% endcomment %}
+          <div id="shopify-product-reviews" data-id="{{ product.id }}">{% comment %}ly_code_replace_for_[ product.metafields.spr.reviews ]_begin{% endcomment %}{% assign language = cart.attributes["language"] %}{% if language == nil %}{% assign language = shop.metafields["languages"]["default"] %}{% endif %}{% assign ns = language | append: 'spr' %}{% assign key = 'reviews' %}{% if product.metafields[ns][key] %}{% assign ly_translation = product.metafields[ns][key] %}{% else %}{% assign ly_translation =  product.metafields.spr.reviews  %}{% endif %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}</div>
+
+          <div id="product-price" itemprop="offers" itemscope itemtype="http://schema.org/Offer" class="delta">
+            <meta itemprop="priceCurrency" content="{{ shop.currency }}" />
+            {% if product.available %}
+            <link itemprop="availability" href="http://schema.org/InStock" />
+            {% else %}
+            <link itemprop="availability" href="http://schema.org/OutOfStock" />
+            {% endif %}
+            <p>
+              {% assign variant = product.selected_or_first_available_variant %}
+              {% if product.compare_at_price > product.price %}
+              <span class="product-price on-sale" itemprop="price">
+                {% if cart.attributes.language == 'ly27068' %}
+                  {{ variant.price | money_with_currency }}
+                {% else %}
+                  {{ variant.price | money }}
+                {% endif %}
+              </span>
+              <s class="product-compare-price">
+                {% if cart.attributes.language == 'ly27068' %}
+                  {{ variant.compare_at_price | money_with_currency }}
+                {% else %}
+                  {{ variant.compare_at_price | money }}
+                {% endif %}
+              </s>
+              {% else %}
+              <span class="product-price" itemprop="price">
+                {% if product.price_varies %}From{% endif %}
+                  {% if cart.attributes.language == 'ly27068' %}
+                    {{ product.price | money_with_currency | remove: ".00" }}
+                  {% else %}
+                    {{ product.price | money | remove: ".00" }}
+                  {% endif %}
+                  {% if on_sale %}
+                  <s class="compare-at-price">{{ product.compare_at_price | money }}</s>
+                {% endif %}
+              </span>
+              {% endif %}
+              <span class='setTopBottom'></span>
+            </p>
+          </div>
+          {% capture desc %}
+            {% comment %}ly_code_replace_for_[ product.description ]_begin{% endcomment %}{% include 'ly-description' with product %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}
+          {% endcapture %}
+          {% assign short_desc = desc | split: '<!-- split -->' | first %}
+          {% assign long_desc = desc | split: '<!-- split -->' | last %}
+
+          <div id="product-description" class="rte" itemprop="description">
+            {{ short_desc }}
+          </div>
+
+          {% comment %} FRASE TATUAJE {% endcomment %}
+          <div class='tatuaje'>
+            <!--
+            <p><ly-as-4368685>We will send you an YSHEYGirl set, a see-through pouch & cute golden tattoos with every order!</ly-as-4368685></p>
+            <br>
+            <br>
+            <!--
+            <p><ly-as-4331999>If the size you are looking for is out of stock, send us an email or click on</ly-as-4331999> </p>
+              <div class="hasWindow">
+                <a href=""><ly-as-4332000>CAN WE HELP YOU?</ly-as-4332000></a>
+                <div class='window' style='display:none;'>
+                  <div class='title'>
+                    {% comment %}ly_code_replace_for_[ pages.need-some-help.title ]_begin{% endcomment %}{% include 'ly-title' with pages.need-some-help %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}
+                  </div>
+                  <div class='content'>
+                    {% comment %}ly_code_replace_for_[ pages.need-some-help.content ]_begin{% endcomment %}{% include 'ly-content' with pages.need-some-help %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}
+                  </div>
+                </div>
+              </div>
+              <p><ly-as-4332001>and we will contact you when it is back in stock.</ly-as-4332001></p>
+            </p>
+            -->
+          </div>
+
+          {% comment %} Asigna hide_default_title para uso Shopify {% endcomment %}
+          {% assign hide_default_title = false %}
+          {% if product.variants.size == 1 and product.variants.first.title contains 'Default' %}
+            {% assign hide_default_title = true %}
+          {% endif %}
+
+          {% comment %} VARIANTES {% endcomment %}
+          <div id="product-variants" class="masUnidades {% if hide_default_title %} hidden{% endif %}">
+            <select id="product-select" name="id" {% if product.options.[0] == 'Title' && product.options.[0] == null %} style="visibility:hidden;" {% endif %}>
+            <option value='' selected="selected"></option>
+            {% for variant in product.variants %}
+              <option{% if forloop.length <= 1 %}
+                <option {% if variant == product.selected_or_first_available_variant %} selected="selected" {% endif %} data-sku="{{ variant.sku }}" value="{{ variant.id }}">{% comment %}ly_code_replace_for_[ variant.title ]_begin{% endcomment %}{% include 'ly-title' with variant %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %} - {{ variant.price | money_with_currency }}</option>
+              {% endif %}
+               <ly-as-4182886>value="</ly-as-4182886>{{ variant.id }}">
+              {% comment %}ly_code_replace_for_[ variant.title ]_begin{% endcomment %}{% include 'ly-title' with variant %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %} - {{ variant.price | money }}
+              </option>
+            {% endfor %}
+            </select>
+            {% if product.available and product.variants.size > 1 %}
+              {% for option in product.options %}
+                {% include 'swatch' with option %}
+              {% endfor %}
+            {% endif %}
+            <div class='alertAdd'></div>
+            <span class='ultimasUd'><ly-as-4182887>Last units</ly-as-4182887></span>
+          </div>
+
+          {% comment %} BOTÓN COMPRAR {% endcomment %}
+          <div class='btn_add'>
+            <div class='enlacesBag'>
+              <div class='hasWindow'>
+                {% comment %}
+                <a href="" id='sizing'>Sizing</a>
+                {% endcomment %}
+                <a class='sizingBtn' href="pages/perfect-fit-guarantee">
+                  <ly-as-4182888>Sizing</ly-as-4182888>
+                </a>
+                <div class='window' style='display:none;'>
+                  <div class='title'>
+                    {% comment %}ly_code_replace_for_[ pages.perfect-fit-guarantee.title ]_begin{% endcomment %}{% include 'ly-title' with pages.perfect-fit-guarantee %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}
+                  </div>
+                  <div class='content'>
+                    {% comment %}ly_code_replace_for_[ pages.perfect-fit-guarantee.content ]_begin{% endcomment %}{% include 'ly-content' with pages.perfect-fit-guarantee %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}
+                  </div>
+                </div>
+              </div>
+
+              <a class='description' href=""><ly-as-4182889>Description</ly-as-4182889></a>
+            </div>
+            <div id="product-add">
+              <input type="submit" name="add" id="add" class="primary button" value="{{ add_to_cart | escape }}">
+              <a class='btnAddPr'><div style="position:absolute; left:0; right:0; top:0; bottom:0; cursor: pointer; display:none;" id="hideInput"></div></a>
+            </div>
+            <div class='enlacesBag'>
+              <div class="hasWindow">
+                <a class='enlb paylater' href="/pages/pay-later">
+                    <ly-as-4182890>Pay Later</ly-as-4182890>
+                </a>
+                <div class='window' style='display:none;'>
+                  <div class='title'>
+                    {% comment %}ly_code_replace_for_[ pages.pay-later.title ]_begin{% endcomment %}{% include 'ly-title' with pages.pay-later %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}
+                  </div>
+                  <div class='content'>
+                    {% comment %}ly_code_replace_for_[ pages.pay-later.content ]_begin{% endcomment %}{% include 'ly-content' with pages.pay-later %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}
+                  </div>
+                </div>
+              </div>
+              <div class="hasWindow">
+                <a class='enlb shipping' href="/pages/free-returns-exchanges">
+                  <ly-as-4241518>Worldwide Shipping</ly-as-4241518>
+                </a>
+                <div class='window' style='display:none;'>
+                  <div class='title'>
+                    {% comment %}ly_code_replace_for_[ pages.24h-shipping.title ]_begin{% endcomment %}{% include 'ly-title' with pages.24h-shipping %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}
+                  </div>
+                  <div class='content'>
+                    {% comment %}ly_code_replace_for_[ pages.24h-shipping.content ]_begin{% endcomment %}{% include 'ly-content' with pages.24h-shipping %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {% comment %} ZONA FACEBOOK WHATSAPP {% endcomment %}
+          <div class="shareProduct">
+            <div class='iconShare'>
+              <a href="whatsapp://send?text=YSHEY | {% comment %}ly_code_replace_for_[product.title]_begin{% endcomment %}{% include 'ly-title' with product %}{{ly_translation}}{% comment %}ly_code_replace_end{% endcomment %}. {{ shop.url }}{{ product.url }}" data-action="share/whatsapp/share"><img src="{% comment %}ly_asset_replace_for_[ 'whatsapp.svg' | asset_url ]_begin{% endcomment %}{% assign ly_asset = 'whatsapp.svg' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}"></a>
+              <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u={{ shop.url }}{{ product.url }}"><img src="{% comment %}ly_asset_replace_for_[ 'facebookSh.svg' | asset_url ]_begin{% endcomment %}{% assign ly_asset = 'facebookSh.svg' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}"></a>
+            </div>
+            <h4><ly-as-4750969>Like it. Share it.</ly-as-4750969></h4>
+          </div>
+
+
+
+
+        </div><!-- .product-details -->
+
+    <!--Spice Product Kits Child Product Lists Starts-->
+    <div id="spicegems_metafields_data_div" data-default_variant="{{product.selected_or_first_available_variant.id}}" style="display:none;visibility:hidden;">
+    {{ product.metafields['spice_product_kits'] | json }}
+    </div>
+    <!--Spice Product Kits Child Product Lists End-->
+
+        <div class='fotos-zoom'>
+
+          {% comment %} FOTOS ZOOM © . js {% endcomment %}
+          <div class="swiper-container2">
+            <div class="swiper-wrapper">
+              {% for image in product.images %}
+                  <div style="background-image: url({{ image | img_url: '1400x' }});" class="swiper-slide"></div>
+              {% endfor %}
+            </div>
+          </div>
+          <a class='prev swiper-button-prev'><span></span></a>
+          <a class='next swiper-button-next'><span></span></a>
+          <a class='close'></a>
+        </div>
+        {% comment %} Boton comprar oculto movil/zoom {% endcomment %}
+          <div class='bandaBajaDesc'>
+            <div class='centroBtn'>
+              <div id="product-add">
+                <input type="submit" name="add" id="addT" class="primary button" value="{{ add_to_cart | escape }}">
+                <input type="submit" name="add" id="addT" class="primary button zoomB" value="{{ add_to_cartZoom | escape }}">
+                <a class='btnAddPr'><div style="position:absolute; left:0; right:0; top:0; bottom:0; cursor: pointer; display:none;" id="hideInputT"></div></a>
+              </div>
+              <span class="product-price" itemprop="price">
+                {% if product.price_varies %}<ly-as-4182885>From</ly-as-4182885>{% endif %}
+                  {{ product.price | money | remove: ".00" }}
+                  {% if on_sale %}
+                  <s class="compare-at-price">{{ product.compare_at_price | money }}</s>
+                {% endif %}
+              </span>
+            </div>
+          </div>
+      </form>
+
+    <!--Spice Product Kits lineitems script Starts-->
+
+    {{ 'https://product-kits.spicegems.com/bundle/script-tags/6c0d13d3ad6cc317017872e51d01b238.js?v=dfhjfhfjhhfjdfewqpt&shop=yshey.myshopify.com' | script_tag }}
+
+    <!--Spice Product Kits lineitems script End-->
+
+    </div>
+
+
+
+    {% comment %}
+    COMPLETE PRODUCT
+    {% endcomment %}
+    {% comment %} BUSCAMOS TAG Combination {% endcomment %}
+    {% assign tagAccessories = null %}
+    {% for accessoriesTag in product.tags %}
+      {% unless tagsExclude contains accessoriesTag %}
+        {% if accessoriesTag contains 'Accessories' %}
+          {% unless tagsExclude contains collectionCombination.title %}
+            {% assign itemTag = tagSplit %}
+            {% assign tagAccessories = accessoriesTag | handle %}
+          {% endunless %}
+        {% endif %}
+      {% endunless %}
+    {% endfor %}
+
+    {% comment %}
+    ACCESSORIES PRODUCT
+    {% endcomment %}
+    {% if product.type == 'Biquini' %}
+      {% unless tagAccessories == null %}
+        <div class="combinationsProd">
+          <h2><ly-as-4182893>Complete the look</ly-as-4182893></h2>
+          <ul class="grid clearfix">
+            {% for product in collections[tagAccessories].products %}
+              {% include 'product-grid-item' with products_per_row %}
+            {% endfor %}
+          </ul>
+        </div>
+      {% endunless %}
+    {% endif %}
+
+
+
+
+    {% comment %} BUSCAMOS TAG Combination {% endcomment %}
+    {% assign tagCombination = null %}
+    {% for combinationTag in product.tags %}
+      {% unless tagsExclude contains combinationTag %}
+        {% if combinationTag contains 'Combination' %}
+          {% unless tagsExclude contains collectionCombination.title %}
+            {% assign itemTag = tagSplit %}
+            {% assign tagCombination = combinationTag | handle %}
+          {% endunless %}
+        {% endif %}
+      {% endunless %}
+    {% endfor %}
+
+
+
+    {% comment %}
+    COMBINATIONS PRODUCT
+    {% endcomment %}
+    {% if product.type == 'Biquini' or 'Accessories' %}
+      {% unless tagCombination == null %}
+        <div class="combinationsProd">
+          <h2><ly-as-4182895>Style combinations for you</ly-as-4182895></h2>
+          <ul class="grid clearfix">
+            {% for product in collections[tagCombination].products %}
+              {% include 'product-grid-item' with products_per_row %}
+            {% endfor %}
+          </ul>
+        </div>
+      {% endunless %}
+    {% endif %}
+
+
+    {% comment %}
+      Adding support for product options. See here for details:
+      http://docs.shopify.com/support/your-website/themes/can-i-make-my-theme-use-products-with-multiple-options
+    {% endcomment %}
+
+    <script>
+
+    // Cuando cambia la variante
+    var selectCallback = function(variant, selector) {
+
+      //Borra si hay alerta puesta
+      $('.alertAdd').html('');
+
+      var topBottom = 'Top & Bottom'
+      {% if product.tags contains 'One Piece' %}
+        topBottom = 'One Piece';
+      {% endif %}
+
+      //Si existe variante
+      if (variant) {
+        var form = jQuery('#' + selector.domIdPrefix).closest('form');
+        $( '#product-variants' ).addClass('masUnidades');
+        for (var i=0,length=variant.options.length; i<length; i++) {
+          var radioButton = form.find('.swatch[data-option-index="' + i + '"] :radio[value="' + variant.options[i] +'"]');
+          if (radioButton.hasClass('agotado')) {
+            $( '#product-variants' ).removeClass('masUnidades');
+          }
+        }
+
+
+        // Swap image.
+        if (variant.featured_image) {
+          var newImage = variant.featured_image; // New image object.
+          var mainImageDomEl = jQuery('.product-photo-container img')[0]; // DOM element of main image we need to swap.
+          Shopify.Image.switchImage(newImage, mainImageDomEl, switchImage); // Define switchImage (the callback) in your theme's JavaScript file.
+
+        }
+
+        // Selected a valid variant that is available.
+        if (variant.available) {
+
+          // Enabling add to cart button.
+          jQuery('#add, #addT').removeClass('disabled').prop('disabled', false).val({{add_to_cart | json}});
+          jQuery('.button.zoomB').removeClass('disabled').prop('disabled', false).val({{add_to_cartZoom | json}});
+
+          $('#hideInput, #hideInputT').css('display', 'none');
+          // If item is backordered yet can still be ordered, we'll show special message.
+          if (variant.inventory_management && variant.inventory_quantity <= 0) {
+            jQuery('#selected-variant').html({% comment %}ly_code_replace_for_[ product.title | json ]_begin{% endcomment %}{% include 'ly-title' with product %}{{ ly_translation | json }}{% comment %}ly_code_replace_end{% endcomment %}{% unless hide_default_title %} + ' - ' + variant.title{% endunless %});
+            jQuery('#backorder').removeClass("hidden");
+          } else {
+            jQuery('#backorder').addClass("hidden");
+          }
+
+        } else {
+          // Variant is sold out.
+          jQuery('#backorder').addClass('hidden');
+          jQuery('#add, #addT').val({{ sold_out | json }}).addClass('disabled').prop('disabled', true);
+        }
+        if ( {{ cart.attributes.language | json }} == 'ly27068' ) {
+          var variantPrice = Shopify.formatMoney(variant.price, "{{ shop.money_with_currency_format }}").replace('.00', '');
+        } else {
+          var variantPrice = Shopify.formatMoney(variant.price, "{{ shop.money_format }}").replace('.00', '');
+        }
+
+        // Whether the variant is in stock or not, we can update the price and compare at price.
+        if ( variant.compare_at_price > variant.price ) {
+          jQuery('#product-price').html('<span class="product-price on-sale">'+ variantPrice +'</span>'+' <s class="product-compare-price">'+variant.compare_at_price+ '</s>');
+        } else {
+          jQuery('#product-price').html('<span class="product-price">'+variantPrice+ ' </span><span class="clearIfN">' + topBottom + '</span>' );
+        }
+
+      } else {
+        $('#hideInput, #hideInputT').css('display', 'inherit');
+        // variant doesn't exist.
+        if ( {{ cart.attributes.language | json }} == 'ly27068' ) {
+         jQuery('#product-price').html('<span class="product-price">{{product.price | money_with_currency | remove: ".00" }} </span><span class="clearIfN">' + topBottom + '</span>' );
+        } else {
+          jQuery('#product-price').html('<span class="product-price">{{product.price | money | remove: ".00" }} </span><span class="clearIfN">' + topBottom + '</span>' );
+        }
+        // SOLD OUT si no hay existencias
+
+        jQuery('#backorder').addClass('hidden');
+        jQuery('#add, #addT').val({{add_to_cart | json}}).addClass('disabled').prop('disabled', true);
+        jQuery('.button.zoomB').val({{add_to_cartZoom | json}}).addClass('disabled').prop('disabled', true);
+        {% if product.available == false %}
+          jQuery('#backorder').addClass('hidden');
+          jQuery('#add, #addT').val({{ sold_out | json }}).addClass('disabled').prop('disabled', true);
+        {% endif %}
+      }
+
+      // RADIOBUTTONS en vez de selector. -BEGIN SWATCHES-
+      if (variant) {
+        var form = jQuery('#' + selector.domIdPrefix).closest('form');
+        for (var i=0,length=variant.options.length; i<length; i++) {
+          var radioButton = form.find('.swatch[data-option-index="' + i + '"] :radio[value="' + variant.options[i] +'"]');
+          if (radioButton.size()) {
+            radioButton.get(0).checked = true;
+          }
+        }
+      }
+      // END SWATCHES
+
+    };
+
+
+    jQuery(function($) {
+      // Añade variantes
+      {% if product.options.[0] != 'Title' && product.options.[0] != null %}
+        new Shopify.OptionSelectors('product-select', { product: {{ product | json }}, onVariantSelected: selectCallback, enableHistoryState: true });
+
+        // Add label if only one product option and it isn't 'Title'.
+        {% if product.options.size == 1 and product.options.first != 'Title' %}
+          $('.selector-wrapper:eq(0)').prepend('<label>{{ product.options.first }}</label>');
+        {% endif %}
+
+      {% endif %}
+
+
+
+      /* Esconde Batón Precio cuando está en la zona de descripción */
+      $(document).scroll(function() {
+        var scrollBottom = $(window).height() + $(document).scrollTop();
+        if ( $('.btn_add').length ) {
+          if ( scrollBottom > $('.btn_add').offset().top && $(document).scrollTop() < $('.btn_add').offset().top ) {
+            if ( ! $('html').hasClass('zoomPhoto') ) {
+              $('body').addClass('hideAdd');
+            }
+          } else {
+            $('body').removeClass('hideAdd');
+          }
+        }
+      });
+
+
+
+      /* Lightbox DESCRIPTION */
+      $('.enlacesBag .description').click(function(e){
+        var short_desc = {{ short_desc | json }};
+        var long_desc = {{ long_desc | json }};
+        if ( long_desc != undefined || short_desc != undefined ) {
+          $('body').addClass('preHtmlAjax');
+          setTimeout(function(){
+            $('#htmlAjax').append('<img src="{% comment %}ly_asset_replace_for_[ "icon-seachx.svg" | asset_url ]_begin{% endcomment %}{% assign ly_asset = "icon-seachx.svg" %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}" class="close">');
+            $('#htmlAjax').append('<h1 class="title">{% comment %}ly_code_replace_for_[ product.title ]_begin{% endcomment %}{% include 'ly-title' with product %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}</h1>');
+            $('#htmlAjax').append(short_desc + long_desc);
+            $('body').addClass('htmlAjax');
+          }, 100);
+        }
+        e.preventDefault();
+      });
+
+
+
+      /* Pide seleccionar una opción si no ha seleccionado Top o bottom */
+      $("#hideInput, #hideInputT").click(function() {
+        if ( $('#add, #addT').hasClass('disabled') && $('#add, #addT').val() != {{ sold_out | json }} ) {
+          if ( $('html').hasClass('zoomPhoto') ) {
+            $('html').removeClass('zoomPhoto');
+          }
+          $('.alertAdd').html({{ selectOption | json }});
+
+        }
+      });
+
+
+      /* Sizing */
+      {% capture content %}{% include 'tablaTallas' %}{% endcapture %}
+      var content = {{ content | json }};
+      $('#sizing').click(function(e){
+        $('body').addClass('preHtmlAjax');
+        setTimeout(function(){
+          $('#htmlAjax').append('<img src="{% comment %}ly_asset_replace_for_[ "icon-seachx.svg" | asset_url ]_begin{% endcomment %}{% assign ly_asset = "icon-seachx.svg" %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}" class="close">');
+          $('#htmlAjax').append(content);
+          $('body').addClass('htmlAjax');
+        }, 100);
+        e.preventDefault();
+      });
+
+
+    });
+
+
+
+
+    Shopify.Image.preload({{ product.images | json }}, 'grande');
+    Shopify.Image.preload({{ product.images | json }}, '1024x1024');
+
+    </script>
+
+    <!-- Facebook Pixel Code -->
+    <script>
+      $(".product form").submit(function(){
+        fbq('track', 'AddToCart', {
+        content_ids: ['{{ product.id }}'],
+        content_type: 'product',
+        value: '{{ product.price | divided_by: 100 }}',
+        currency: 'EUR'
+       })
+      });
+      fbq('track', 'ViewContent', {
+        content_type: 'product',
+        content_ids: ['{{ product.id }}']
+      });
+    </script>
+    <!-- End Facebook Pixel Code -->
+  </div>
+  <!-- END CODE FOR REGULAR PRODUCT: ALL EXCEPT THE ONES THAT BELONGS TO PART-PICKER COLLECTION -->
+
+{% endif %}

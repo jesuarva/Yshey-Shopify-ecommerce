@@ -1,0 +1,188 @@
+{% comment %}ly_global_begin{% endcomment %}{% include 'ly-global' %}{% comment %}ly_global_end{% endcomment %}
+<!-- SLIDE FOTOS HOME -->
+<img src='{% comment %}ly_asset_replace_for_[ 'icon-helpF.svg' | asset_url ]_begin{% endcomment %}{% assign ly_asset = 'icon-helpF.svg' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}' class='arrowHome'>
+<div class='fotos-escritorio'>
+  {% for block in section.blocks %}
+    {% if block.settings.fotoHome != null %}
+      <img class='escritorio' src='{{block.settings.fotoHome | img_url: "1600x"}}'>
+    {% endif %}
+  {% endfor %}
+</div>
+<div class='fotos-escritorio-movil'>
+  {% for block in section.blocks %}
+    {% if block.settings.fotoHomeMovil != null %}
+      <img class='movil' src='{{block.settings.fotoHomeMovil | img_url: "500x"}}'>
+    {% endif %}
+  {% endfor %}
+</div>
+<div class='headerHome imagen-home'></div>
+<div class='headerHome imagen-home2'></div>
+<!-- ****************** -->
+
+<!-- Banner SCD -->
+<div class="bannersdc">
+  <h2><ly-as-4891477>Yshey Total Look</ly-as-4891477></h2>
+</div>
+
+<!-- Fin banner -->
+
+{% if section.settings.seleccionFormato == 'global' %}
+  <div class='headerCenter logoTexto'>
+    <img src="{% comment %}ly_asset_replace_for_[ 'logo.svg' | asset_url ]_begin{% endcomment %}{% assign ly_asset = 'logo.svg' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}"  alt="<ly-as-4182619>logo-yshey</ly-as-4182619>" itemprop="logo-yshey">
+    <div class='campaign'>
+      <h4>{{ section.settings.textSectionLink }}</h4>
+      <h2>{{ section.settings.text_campaign }}</h2>
+      <div class='showMore'>
+        <a href="{{ section.settings.campaign }}">{{ section.settings.textLink }}</a>
+      </div>
+    </div>
+  </div>
+{% elsif section.settings.seleccionFormato == 'individuales' %}
+
+
+ <div class='indHe'> 
+  {% for block in section.blocks %}
+    {% if block.settings.seleccionFormato == 'none' %} 
+        <div class='headerCenter logoSolo headIndividuales'>
+          <img src="{% comment %}ly_asset_replace_for_[ 'logo.svg' | asset_url ]_begin{% endcomment %}{% assign ly_asset = 'logo.svg' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}"  alt="<ly-as-4182619>logo-yshey</ly-as-4182619>" itemprop="logo-yshey">
+          <div class='showMore'>
+            <a href="{{ section.settings.campaign }}"><ly-as-4182618>View Campaign</ly-as-4182618></a>
+          </div>
+        </div>
+
+    {% elsif block.settings.seleccionFormato == 'global' %}  
+      <div class='headerCenter logoTexto headIndividuales'>
+        <img src="{% comment %}ly_asset_replace_for_[ 'logo.svg' | asset_url ]_begin{% endcomment %}{% assign ly_asset = 'logo.svg' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}"  alt="<ly-as-4182619>logo-yshey</ly-as-4182619>" itemprop="logo-yshey">
+        <div class='campaign'>
+          <h4>{{ section.settings.textSectionLink }}</h4>
+          <h2>{{ section.settings.text_campaign }}</h2>
+          <div class='showMore'>
+            <a href="{{ section.settings.campaign }}">{{ section.settings.textLink }}</a>
+          </div>
+        </div>
+      </div>
+    {% elsif block.settings.seleccionFormato == 'logoTexto' %}
+      <div class='headerCenter logoTexto headIndividuales'>
+        <img src="{% comment %}ly_asset_replace_for_[ 'logo.svg' | asset_url ]_begin{% endcomment %}{% assign ly_asset = 'logo.svg' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}"  alt="<ly-as-4182619>logo-yshey</ly-as-4182619>" itemprop="logo-yshey">
+        <div class='campaign'>
+          <h4>{{ block.settings.textSectionLink }}</h4>
+          <h2>{{ block.settings.text_campaign }}</h2>
+          <div class='showMore'>
+            <a href="{{ block.settings.campaign }}">{{ block.settings.textLink }}</a>
+          </div>
+        </div>
+      </div>
+    {% else %}
+
+    {% endif %}
+
+  {% endfor %}
+
+ </div>
+
+
+
+{% else %}
+  <div class='headerCenter logoSolo'>
+    <img src="{% comment %}ly_asset_replace_for_[ 'logo.svg' | asset_url ]_begin{% endcomment %}{% assign ly_asset = 'logo.svg' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}"  alt="<ly-as-4182619>logo-yshey</ly-as-4182619>" itemprop="logo-yshey">
+    <div class='showMore'>
+      <a href="{{ section.settings.campaign }}"><ly-as-4182618>View Campaign</ly-as-4182618></a>
+    </div>
+  </div>
+{% endif %}
+
+
+{% schema %}
+  {
+    "name": "Portada Header",
+    "settings": [
+      {
+        "type": "radio",
+        "id": "seleccionFormato",
+        "options": [
+          { "value": "none", "label": "Sólo logo + link"},
+          { "value": "global", "label": "Logo, texto y link global"},
+          { "value": "individuales", "label": "Mostrar ediciones individuales"}
+        ],
+        "label": "Formato"
+      },
+      {
+        "type": "text",
+        "id": "textSectionLink",
+        "label": "Título de sección"
+      },
+      {
+         "type": "text",
+         "id": "text_campaign",
+         "label": "Texto titular Global"
+      },
+      {
+        "type": "text",
+        "id": "textLink",
+        "label": "Texto del link"
+      },
+      {
+        "type": "url",
+        "id": "campaign",
+        "label": "Url del link"
+      }
+    ],
+    "blocks": [
+        {
+        "type": "images",
+        "name": "Image y textos",
+        "settings": [
+          {
+            "type": "image_picker",
+            "id": "fotoHome",
+            "label": "Foto portada",
+            "info": "Imagen con un mínimo de ancho a 1600px"
+          },
+          {
+            "type": "image_picker",
+            "id": "fotoHomeMovil",
+            "label": "Foto portada | móvil",
+            "info": "Imagen con un mínimo de ancho a 500px"
+          },
+          {
+            "type": "radio",
+            "id": "seleccionFormato",
+            "options": [
+              { "value": "none", "label": "Nada"},
+              { "value": "global", "label": "Global"},
+              { "value": "logoTexto", "label": "Individual | Textos"},
+              { "value": "video", "label": "Individual | Video"}
+            ],
+            "label": "Formato"
+          },
+          {
+            "type": "text",
+            "id": "textSectionLink",
+            "label": "Título de sección"
+          },
+          {
+             "type": "text",
+             "id": "text_campaign",
+             "label": "Texto titular"
+          },
+          {
+            "type": "text",
+            "id": "textLink",
+            "label": "Texto del link"
+          },
+          {
+            "type": "url",
+            "id": "campaign",
+            "label": "Url del link"
+          }
+        ]
+        }
+    ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

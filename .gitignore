@@ -1,0 +1,6 @@
+config.yml
+.DS_Store
+assets/*
+locales/*
+layout/*
+config/*

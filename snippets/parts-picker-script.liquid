@@ -1,0 +1,60 @@
+<script type="text/javascript" charset="utf-8">
+//<![CDATA[
+// Including jQuery conditionnally.
+if (typeof jQuery === 'undefined') {
+    document.write({{ "http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" | script_tag | json }});
+  document.write('<script type="text/javascript">jQuery.noConflict();<\/script>');
+}
+//]]>
+</script>
+
+<script>
+var length = {{ linklist.links.size }};
+$(document).ready(function () {
+    $('.choice-button').click(function () {   //Hook the click event for selected elements
+        var price = $(this).attr('data-price');
+        var price = Shopify.formatMoney(price, "");
+        var id = $(this).attr("id");
+        id = id.split("-");
+        var selector = id[0];
+        $("."+id[0]+"-price").html(price);
+    });
+    
+    $("#submit-table").click(function(e) {     
+      e.preventDefault();
+		var toAdd = new Array();
+		for(i=0; i < length; i++){
+			toAdd.push(
+                $(".item-"+ i + " :checked").val()
+            );            
+		}
+        console.log("test:" + toAdd);
+
+    	function moveAlong(){
+			if (toAdd.length) {
+				var request = toAdd.shift();
+				var tempId= request;		
+				var params = {
+					type: 'POST',
+					url: '/cart/add.js',
+					data: 'quantity=1'+'&id='+tempId,
+					dataType: 'json',
+					success: function(line_item) { 
+						console.log("success!");
+						moveAlong();
+					},
+					error: function() {
+						console.log("fail");
+					}
+				};
+				$.ajax(params);
+			}
+			else {
+				document.location.href = '/cart';
+			}  
+		};
+    moveAlong(); 		
+	});
+});
+
+</script>

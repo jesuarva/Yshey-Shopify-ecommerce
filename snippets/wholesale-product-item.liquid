@@ -1,0 +1,54 @@
+<li class="wholesale-product-item" data-product-id="{{ product.id }}">
+  <a href="{{ product.url }}" target="_blank">
+    <img data-src="{{ product | img_url: '100x' }}" alt="{{ product.featured_image.alt | escape }}" />
+  </a>
+  <h3 class="wholesale-product-title">{{ product.title }}</h3>
+  <table class="wholesale-variants-table">
+    <tr>
+    {% for variant in product.variants %}
+      {% if customer.tags contains 'wholesaler_admin' or variant.metafields.wholesaler_variant['hide'] != 'true' %}
+        {% assign wholesale_price = variant.price | times: customer_discount_rate %}
+      	{% if collectionsWithInventoryTracking contains collectionHandle %}
+      	  {% assign checkStock = true %}
+      	{% else %}
+      	  {% assign checkStock = false %}
+      	{% endif %}
+        <th>
+          <div class="wholesale-variant-title">{{ variant.title }}</div>
+          <div class="wholesale-variant-price">{{ wholesale_price | money_with_currency }}</div>
+          {% comment %}
+		  {% if checkStock %}
+          	{% assign outOfStock = variant.inventory_quantity <= 0 %}
+          	<div class="wholesale-variant-stock">{% if variant.inventory_quantity <= 0 %}Out of stock{% else %}{{ variant.inventory_quantity }} in stock{% endif %}</div>
+          {% endif %}
+          {% endcomment %}
+        </th>
+      {% endif %}
+    {% endfor %}
+    </tr>
+    <tr>
+    {% for variant in product.variants %}
+      {% if customer.tags contains 'wholesaler_admin' or variant.metafields.wholesaler_variant['hide'] != 'true' %}
+        {% assign wholesale_price = variant.price | times: customer_discount_rate %}
+        {% assign bundle_id = 'bundle_' | append: variant.id %}
+      	{% if collectionsWithInventoryTracking contains collectionHandle %}
+      	  {% assign checkStock = true %}
+      	{% else %}
+      	  {% assign checkStock = false %}
+      	{% endif %}
+        <td data-variant-id="{{ variant.id }}">
+          <input type="text"
+                 data-bundle-sku="{{ product.metafields.spice_product_kits[bundle_id] }}" data-variant-id="{{ variant.id }}"
+                 data-variant-price="{{ variant.price }}"
+                 data-product-discount-rate="{{ customer_discount_rate }}"
+                 data-product-tags="{{ product.tags | join: ',' | downcase }}"
+                 {% if checkStock %}
+                 data-variant-stock="{{ variant.inventory_quantity | default: 0}}"
+                 {% endif %}
+                 placeholder="0" class="wholesale-variant-quantity" {% if variant.inventory_quantity <= 0 %}disabled{% endif %}/>
+        </td>
+      {% endif %}
+    {% endfor %}
+    </tr>
+  </table>
+</li>

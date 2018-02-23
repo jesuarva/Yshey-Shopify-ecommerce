@@ -1,0 +1,470 @@
+{% comment %}ly_global_begin{% endcomment %}{% include 'ly-global' %}{% comment %}ly_global_end{% endcomment %}
+  
+{% if cart.item_count > 0 %}
+
+{% comment %}
+PARCHE TRADUCCIÓN PLUGIN CAJA REGALO
+{% endcomment %}
+<script type="text/javascript">
+  if ( {{ cart.attributes.language | json }} == 'ly27068' ) {
+    var input = '<input type="checkbox"> Caja regalo - <span class="money" data-original-value="5 €" data-original-currency="EUR" data-current-value="5.00 €" data-current-currency="EUR">5 €</span>';
+  } else {
+    var input = '<input type="checkbox"> Gift Box - <span class="money" data-original-value="5 €" data-original-currency="EUR" data-current-value="5.00 €" data-current-currency="EUR">5 €</span>';
+  }
+  
+  
+  regaloEspanol();
+  function regaloEspanol() {
+    setTimeout(function(){
+      if ( $('.product-fees-container').length ) {
+        
+        for (var i = $('.product-fees-container').length - 1; i >= 0; i--) {
+          var copiaHtml = $('.product-fees-container')[i];
+          var copia = $(copiaHtml).find('li').html();
+          copia = copia.replace(" Gift Box -", " Caja regalo -");
+          copia = copia.replace(".00", "");
+          $(copiaHtml).find('ul').append('<li class="fake">' + input + '</li>');
+        }
+      } else {
+        regaloEspanol2();
+      }
+    }, 500);
+  }
+  function regaloEspanol2() {
+    setTimeout(function(){
+      if ( $('.product-fees-container').length ) {
+        for (var i = $('.product-fees-container').length - 1; i >= 0; i--) {
+          var copiaHtml = $('.product-fees-container')[i];
+          var copia = $(copiaHtml).find('li').html();
+          copia = copia.replace(" Gift Box -", " Caja regalo -");
+          copia = copia.replace("5.00", "5");
+          $(copiaHtml).find('ul').append('<li class="fake">' + input + '</li>');
+        }
+      } else {
+        regaloEspanol();
+      }
+    }, 500);
+  }
+  $(document).on( 'click', 'li.fake input',  function(){
+    console.log($(this).parent('li').prev().find('.apply_fee'));
+    $(this).parent('li').prev().find('.apply_fee').trigger('click');
+  });
+</script>
+
+
+
+<form action="/cart{% comment %}ly_checkout_begin{% endcomment %}{% assign language = cart.attributes["language"] %}{% if language == nil %}{% assign language = shop.metafields["languages"]["default"] %}{% endif %}{% assign checkout_code = shop.metafields.language_codes[language] %}{% if checkout_code %}{% assign checkout_code = '?locale=' | append: checkout_code %}{{ checkout_code }}{% endif %}{% comment %}ly_checkout_end{% endcomment %}" method="post">
+  
+  <div class='sequraAlert'><img src="{% comment %}ly_asset_replace_for_[ 'sequra.png' | asset_url ]_begin{% endcomment %}{% assign ly_asset = 'sequra.png' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}"><p><ly-as-4321470>Haz tu pedido hoy y paga en 7 días. Si eliges SeQura como método de pago, podrás recibir primero tu pedido y después pagar.</ly-as-4321470></p></div>
+  
+  <div class='tablaEscritorio'>
+    <table>
+      <thead>
+        <tr>
+          <th class="hide-on-small"></th>
+          <th> </th>
+          <th class="hide-on-small"><ly-as-4182745>Price</ly-as-4182745></th>
+          <th><ly-as-4182746>QTY</ly-as-4182746></th>
+          <th class="hide-on-small"> </th>
+          <th><ly-as-4182747>Total</ly-as-4182747></th>
+        </tr>
+      </thead>
+      
+      <tbody>
+      {% comment %}
+      Elimina Tatuaje (antiguo) en caso de que en algún carro viejo exista, evitamos que alguien compre tatuaje solo 
+      {% endcomment %}
+      <script type="text/javascript" charset="utf-8">
+        var arrayItems = {{ cart.items | json }};
+        var hayItemR = false;
+        if ( {{ cart.items.size | json }} == 1 ) {
+          for (var i = arrayItems.length - 1; i >= 0; i--) {
+            if (arrayItems[i].variant_id == 38329225603 ) {
+              /*jQuery.post('/cart/update.js', "updates[38329225603]=0");*/
+
+              $.ajax({ 
+                type: 'POST',
+                url: '/cart/update.js',
+                dataType: 'json',
+                data: "updates[38329225603]=0",
+                success: function(data) {
+                  location.reload();
+                }, 
+              });
+            }
+          }
+        }
+      </script>
+      {% for item in cart.items %}
+
+          {% if item.title == '#YSHEYGirl set' %}
+            {% assign bolsaRegaloI = true %}
+          {% else %}
+            {% assign bolsaRegaloI = false %}
+          {% endif %}
+
+          {% comment %}
+          Determining the handle of the collection that was last seen for the 'continue shopping' link.
+          {% endcomment %}
+          {% assign collection_url = item.product.collections.last.url %}
+          {% if collection_url == '/collections/frontpage' or collection_url == blank %}
+            {% assign collection_url = '/collections/all' %}
+          {% endif %}
+          
+          {% if forloop.first %}
+            {% assign continue_shopping_url = collection_url %}
+          {% endif %}
+
+          <tr {% if item.title == '#YSHEYGirl set' %}class='itemRegalo'{% endif %}>
+            <td class="hide-on-small image">
+              <a {% unless bolsaRegaloI == true %} href="{{ collection_url }}{{ item.url }} {% endunless %}">
+                <img src="{{ item | img_url: 'compact' }}"  alt="{% comment %}ly_code_replace_for_[ item.title | escape ]_begin{% endcomment %}{% include 'ly-title' with item %}{{ ly_translation | escape }}{% comment %}ly_code_replace_end{% endcomment %}" />
+              </a>
+            </td>
+            <td class='description'>
+              <h2 class="delta">
+
+                <a {% unless bolsaRegaloI == true %} href="{{ collection_url }}{{ item.url }} {% endunless %}">
+                  {% comment %}
+                    Traducimos "Gift Box for" del título del plugin
+                  {% endcomment %}
+                  
+                    {% if cart.attributes.language == 'ly27068' %}
+                      {% comment %}ly_code_replace_for_[ item.product.title ]_begin{% endcomment %}{% include 'ly-title' with item.product %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}
+
+                    {% else %}
+                      {% comment %}ly_code_replace_for_[ item.product.title ]_begin{% endcomment %}{% include 'ly-title' with item.product %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}
+                    {% endif %}
+                <div class='variantes'>
+                  {% for variants in item.variant.options %}
+                    {% if variants != 'Default Title' %}
+                      <span>{{ variants }}</span>
+                    {% endif %}
+                  {% endfor %}
+                </div>
+                </a>
+                {% if item.product.type != 'Product Fee' %}<span class="mw-product-fees" data-id="{{ item.id }}"></span>{% endif %}
+		          {% if settings.cart_notes_enable %}
+		            {% assign noteSize = cart.note | size %}
+		            <div class="grid__item large--five-twelfths">
+		              <button type="button" class="text-link cart__note-add{% if noteSize > 0 %} is-hidden{% endif %}">
+		                {{ 'cart.label.add_note' | t }}
+		              </button>
+		              <div class="cart__note{% if noteSize > 0 %} is-active{% endif %}">
+		                <label for="CartSpecialInstructions">
+		                {% comment %}ly_i18n_replace_for_[ 'cart.general.note' | t ]_begin{% endcomment %}{% capture ly_template %}{{ 'cart.general.note' | t }}{% endcapture %}{% include 'ly-static-string' with '4182762' %}{% if ly_translation %}{% assign escape_content = true %}{% assign ly_template = ly_translation %}{% else %}{% assign escape_content = false %}{% endif %}{% if escape_content %}{{ ly_template | escape}}{% else %}{{ ly_template }}{% endif %}{% comment %}ly_i18n_replace_end{% endcomment %}
+		                </label>
+		                <textarea name="note" class="input-full" id="CartSpecialInstructions">{{ cart.note }}</textarea>
+		              </div>
+		            </div>
+		          {% endif %}
+		          <span class="mw-cart-fees"></span>
+              </h2>
+              {% comment %}
+              Line Item Properties
+              {% endcomment %}
+              {% assign properties_amount = item.properties | size %}
+              {% if properties_amount > 0 %}
+              <p class='variantProduct'>
+                {% for p in item.properties %}
+                  {% unless p.last == blank %}
+                    {{ p.first }}:
+                    {% if p.last contains '/uploads/' %}
+                      <a href="{{ p.last }}">{{ p.last | split: '/' | last }}</a>
+                    {% else %}
+                      {{ p.last }}
+                    {% endif %}
+                    <br />
+                  {% endunless %}
+                {% endfor %}
+              </p>
+              {% endif %}
+              {% unless bolsaRegaloI == true %}
+                <a class='removeI' href="/cart/change?line={{ forloop.index }}&quantity=0"><ly-as-4182750>Remove</ly-as-4182750></a>
+              {% endunless %}
+
+
+              
+            </td>
+            {% if item.title == '#YSHEYGirl set' %}
+              <td class="hide-on-small price"><ly-as-4353793>Free</ly-as-4353793></td>
+              <td>
+                <div class='update' style='display: none;'>
+                  <input type="number" name="updates[]" id="updates_{{ item.id }}" class="quantity" value="{{ item.quantity }}" min="1" />
+                </div>
+              </td>
+              <td></td>
+            {% else %}
+              {% if cart.attributes.language == 'ly27068' %}
+                <td class="hide-on-small price">{{ item.price | money_with_currency | remove: ".00" }}</td>
+              {% else %}
+                <td class="hide-on-small price">{{ item.price | money | remove: ".00" }}</td>
+              {% endif %}
+              <td class='updateQ'>
+                <span>x</span>
+                <div class='update'>
+                  <input type="number" name="updates[]" id="updates_{{ item.id }}" class="quantity" value="{{ item.quantity }}" min="1" />
+                </div>
+                
+              </td>
+              <td class="hide-on-small updateB">
+                <input type="submit" name="update" value="<ly-as-4182759>Update</ly-as-4182759>" />
+              </td>
+            {% endif %}
+            {% if item.title == '#YSHEYGirl set' %}
+              <td class='totalP'><ly-as-4353793>Free</ly-as-4353793></td>
+            {% else %}
+              {% if cart.attributes.language == 'ly27068' %}
+                <td class='totalP'>{{ item.line_price | money_with_currency | remove: ".00" }}</td>
+              {% else %}
+                <td class='totalP'>{{ item.line_price | money | remove: ".00" }}</td>
+              {% endif %}
+            {% endif %}
+          </tr>
+      {% endfor %}
+
+        <tr>
+          <td></td>
+          <td></td>
+          {% if cart.attributes.language == 'ly27068' %}
+            <td colspan="2"><span class='alerta'><ly-as-4240408>Your purchase will be charged in Euros</ly-as-4240408> {{ cart.total_price | divided_by: 100 }} €</span></td>
+            <td><ly-as-4182753>TOTAL</ly-as-4182753></td>
+            <td><h3 class="gamma"><em>{{ cart.total_price | money_with_currency | remove: ".00" }}</em></h3></td>
+          {% else %}
+            <td colspan="2"><span class='alerta'><ly-as-4240409>Your purchase will be charged in Euros €</ly-as-4240409> {{ cart.total_price | divided_by: 100 }}</span></td>
+            <td><ly-as-4182753>TOTAL</ly-as-4182753></td>
+            <td><h3 class="gamma"><em>{{ cart.total_price | money | remove: ".00" }}</em></h3></td>
+          {% endif %}
+          
+          
+        </tr>
+      </tbody>
+      
+    </table>
+  </div>
+
+  <div class='tablaResponsive'>
+
+    {% for item in cart.items %}
+
+      {% if item.title == '#YSHEYGirl set' %}
+        {% assign bolsaRegaloI = true %}
+      {% else %}
+        {% assign bolsaRegaloI = false %}
+      {% endif %}
+      
+      <div class='itemRes'>
+        {% comment %}
+        Determining the handle of the collection that was last seen for the 'continue shopping' link.
+        {% endcomment %}
+        <div class='image'>
+          <a {% unless bolsaRegaloI == true %} href="{{ collection_url }}{{ item.url }}" {% endunless %}>
+            <img src="{{ item | img_url: 'compact' }}"  alt="{% comment %}ly_code_replace_for_[ item.title | escape ]_begin{% endcomment %}{% include 'ly-title' with item %}{{ ly_translation | escape }}{% comment %}ly_code_replace_end{% endcomment %}" />
+          </a>
+        </div>
+        <div class='description'>
+          {% assign collection_url = item.product.collections.last.url %}
+          {% if collection_url == '/collections/frontpage' or collection_url == blank %}
+            {% assign collection_url = '/collections/all' %}
+          {% endif %}
+          
+          {% if forloop.first %}
+            {% assign continue_shopping_url = collection_url %}
+          {% endif %}
+
+          <h2 class="delta">
+            <a {% unless bolsaRegaloI == true %} href="{{ collection_url }}{{ item.url }}" {% endunless %}>
+            {% comment %}
+              Traducimos "Gift Box for" del título del plugin
+            {% endcomment %}
+            {% if cart.attributes.language == 'ly27068' %}
+              {% comment %}ly_code_replace_for_[ item.product.title ]_begin{% endcomment %}{% include 'ly-title' with item.product %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}
+            {% else %}
+              {% comment %}ly_code_replace_for_[ item.product.title ]_begin{% endcomment %}{% include 'ly-title' with item.product %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}
+            {% endif %}
+            <div class='variantes'>
+            {% for variants in item.variant.options %}
+              {% if variants != 'Default Title' %}
+                <span>{{ variants }}</span>
+              {% else %}
+                {% unless bolsaRegaloI == true %} 
+                  <span>-</span>
+                {% endunless %}
+              {% endif %}
+            {% endfor %}
+            </div>
+            </a>
+          </h2>
+        
+
+          {% assign properties_amount = item.properties | size %}
+          {% if properties_amount > 0 %}
+          <p class='variantProduct'>
+            {% for p in item.properties %}
+              {% if p.first == 'promotion_id' or p.first == 'swagify_customer_email' %}
+    {% continue %}
+  {% endif %}
+              {% unless p.last == blank %}
+                {{ p.first }}:
+                {% if p.last contains '/uploads/' %}
+                  <a href="{{ p.last }}">{{ p.last | split: '/' | last }}</a>
+                {% else %}
+                  {{ p.last }}
+                {% endif %}
+                <br />
+              {% endunless %}
+            {% endfor %}
+          </p>
+          {% endif %}
+          <a href="/cart/change?line={{ forloop.index }}&quantity=0"><ly-as-4182750>Remove</ly-as-4182750></a>
+          {% if bolsaRegaloI == true %}
+            <div class='divDer'>
+              <div class='totalP'><ly-as-4353793>Free</ly-as-4353793></div>
+              <div class='update' style='display: none;'>
+                <input type="number" name="updates[]" id="updates_{{ item.id }}" class="quantity" value="{{ item.quantity }}" />
+              </div>
+            </div>
+          {% else %}
+            <div class='divDer'>
+              <div class='updateQ'>
+                <div class='update'>
+                  <input type="number" name="updates[]" id="updates_{{ item.id }}" class="quantity" value="{{ item.quantity }}" />
+                </div>
+              </div>
+              <div class="hide-on-small updateB">
+                <input type="submit" name="update" value="<ly-as-4182760>Update QTY</ly-as-4182760>" />
+              </div>
+              {% if cart.attributes.language == 'ly27068' %}
+                <div class='totalP'>{{ item.line_price | money_with_currency | remove: ".00" }}</div>
+              {% else %}
+                <div class='totalP'>{{ item.line_price | money | remove: ".00" }}</div>
+              {% endif %}
+              <div style='clear:both;'></div>
+            </div>
+          {% endif %}
+          {% if item.product.type != 'Product Fee' %}<span class="mw-product-fees" data-id="{{ item.id }}"></span>{% endif %}
+          {% if settings.cart_notes_enable %}
+            {% assign noteSize = cart.note | size %}
+            <div class="grid__item large--five-twelfths">
+              <button type="button" class="text-link cart__note-add{% if noteSize > 0 %} is-hidden{% endif %}">
+                {{ 'cart.label.add_note' | t }}
+              </button>
+              <div class="cart__note{% if noteSize > 0 %} is-active{% endif %}">
+                <label for="CartSpecialInstructions">
+                {% comment %}ly_i18n_replace_for_[ 'cart.general.note' | t ]_begin{% endcomment %}{% capture ly_template %}{{ 'cart.general.note' | t }}{% endcapture %}{% include 'ly-static-string' with '4182762' %}{% if ly_translation %}{% assign escape_content = true %}{% assign ly_template = ly_translation %}{% else %}{% assign escape_content = false %}{% endif %}{% if escape_content %}{{ ly_template | escape}}{% else %}{{ ly_template }}{% endif %}{% comment %}ly_i18n_replace_end{% endcomment %}
+                </label>
+                <textarea name="note" class="input-full" id="CartSpecialInstructions">{{ cart.note }}</textarea>
+              </div>
+            </div>
+          {% endif %}
+          <span class="mw-cart-fees"></span>
+        </div>
+        <div style='clear:both;'></div>
+      </div>
+    {% endfor %}
+  </div>
+  
+  {% comment %}
+  For the checkout and update buttons to work, they need to use
+  a name attribute set to 'checkout' and 'update', respectively. That's case-sensitive.
+  {% endcomment %}
+  {% if cart.attributes.language == 'ly27068' %}
+    <span class='alerta resp'><ly-as-4285793>You will be charged in euros "</ly-as-4285793> {{ cart.total_price | remove: "00" }} <ly-as-4285794>€"</ly-as-4285794></span>
+  {% else %}
+    <span class='alerta resp'><ly-as-4240257>You will be charged in euros "€</ly-as-4240257> {{ cart.total_price | remove: "00" }}"</span>
+  {% endif %}
+  <div class="column two-thirds flow-opposite right-aligned">
+    {% if cart.attributes.language == 'ly27068' %}
+      <h3 class="gamma"><ly-as-4182747>Total</ly-as-4182747> <em>{{ cart.total_price | money_with_currency | remove: ".00" }}</em></h3>
+    {% else %}
+      <h3 class="gamma"><ly-as-4182747>Total</ly-as-4182747> <em>{{ cart.total_price | money | remove: ".00" }}</em></h3>
+    {% endif %}
+  
+    <div class='shippingGuide hasWindow'>
+      <a id='shippingGuide' href="/pages/shipping-guide">
+        <span><ly-as-4182754>Shipping guide</ly-as-4182754></span>
+        <div class='raya'></div>
+      </a>
+      <div class='window' style='display:none;'>
+        <div class='title'>
+          {% comment %}ly_code_replace_for_[ pages.24h-shipping.title ]_begin{% endcomment %}{% include 'ly-title' with pages.24h-shipping %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}
+        </div>
+        <div class='content'>
+          {% comment %}ly_code_replace_for_[ pages.24h-shipping.content ]_begin{% endcomment %}{% include 'ly-content' with pages.24h-shipping %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}
+        </div>
+      </div>
+    </div>
+    {% if cart.attributes.language == 'ly27068' %}
+      <a class="hide-on-small continue" href="/collections/all">< Volver a la tienda</a>
+    {% else %}
+      <a class="hide-on-small continue" href="/collections/all">< Continue shopping</a>
+    {% endif %}
+    
+    </div>
+    <input class='checkout' type="submit" name="checkout" value="<ly-as-4321473>Check out</ly-as-4321473>" />
+    
+    <div class='consentimiento'>
+      {% if cart.attributes.language == 'ly27068' %}
+        <ly-as-4182755>Si pulsa 'Comprar' está dando su consentimiento a la</ly-as-4182755> 
+        <div class="hasWindow">
+          <a href=""><ly-as-4182756>política de Privacidad Términos y Condiciones de</ly-as-4182756></a>
+          <div class='window' style='display:none;'>
+            <div class='title'>
+              {% comment %}ly_code_replace_for_[ pages.terms-conditions.title ]_begin{% endcomment %}{% include 'ly-title' with pages.terms-conditions %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}
+            </div>
+            <div class='content'>
+              {% comment %}ly_code_replace_for_[ pages.terms-conditions.content ]_begin{% endcomment %}{% include 'ly-content' with pages.terms-conditions %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}
+            </div>
+          </div>
+        </div> <ly-as-4182757>YSHEY</ly-as-4182757>
+      {% else %}
+        <ly-as-4321471>If you click CHECK OUT you are giving your consent to YSHEY</ly-as-4321471>  
+        <div class="hasWindow">
+          <a href=""><ly-as-4321472>Private Policy and Terms</ly-as-4321472></a>
+          <div class='window' style='display:none;'>
+            <div class='title'>
+              {% comment %}ly_code_replace_for_[ pages.terms-conditions.title ]_begin{% endcomment %}{% include 'ly-title' with pages.terms-conditions %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}
+            </div>
+            <div class='content'>
+              {% comment %}ly_code_replace_for_[ pages.terms-conditions.content ]_begin{% endcomment %}{% include 'ly-content' with pages.terms-conditions %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}
+            </div>
+          </div>
+        </div>
+      {% endif %}
+    
+    {% comment %}
+    Paypal and Google checkout buttons
+    
+    {% if additional_checkout_buttons %}
+    <p class="additional-checkout-buttons">
+      {{ content_for_additional_checkout_buttons }}
+    </p>
+    {% endif %}
+    {% endcomment %}
+  </div>
+  
+  {% comment %}
+  For the special instructions to be submitted with order,
+  we need to use a name attribute set to 'note'.
+  
+  <div class="column third flow-opposite left-aligned">
+    <p>Special instructions for seller</p>
+    <textarea name="note">{{ cart.note }}</textarea>
+  </div>
+  {% endcomment %}
+
+</form>
+
+{% else %}
+
+<div>
+  <h2 class="gamma nada"><ly-as-4182758>It appears that your cart is currently empty!</ly-as-4182758></h2>
+  {% if cart.attributes.language == 'ly27068' %}
+    <a class="hide-on-small continue" href="/collections/all">< Volver a la tienda</a>
+  {% else %}
+    <a class="hide-on-small continue" href="/collections/all">< Continue shopping</a>
+  {% endif %}
+</div>
+<section id="swagify-cart-promotions"><section>
+{% endif %}
+

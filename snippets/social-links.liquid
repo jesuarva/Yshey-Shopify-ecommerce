@@ -1,0 +1,42 @@
+{% comment %}ly_global_begin{% endcomment %}{% include 'ly-global' %}{% comment %}ly_global_end{% endcomment %}{% unless settings.facebook_url == blank %}
+<a href="{{ settings.facebook_url }}" title="<ly-as-4182699>Follow us on Facebook</ly-as-4182699>" target="_blank"><span class="shopify-social-icon-facebook{{ settings.social_icons_style }}"></span></a>
+{% endunless %}
+{% unless settings.twitter_url == blank %}
+<a href="{{ settings.twitter_url }}" title="<ly-as-4182700>Follow us on Twitter</ly-as-4182700>" target="_blank"><span class="shopify-social-icon-twitter{{ settings.social_icons_style }}"></span></a>
+{% endunless %}
+{% unless settings.pinterest_url == blank %}
+<a href="{{ settings.pinterest_url }}" title="<ly-as-4182701>Follow us on Pinterest</ly-as-4182701>" target="_blank"><span class="shopify-social-icon-pinterest{{ settings.social_icons_style }}"></span></a>
+{% endunless %}
+{% unless settings.googleplus_url == blank %}
+<a href="{{ settings.googleplus_url }}" title="<ly-as-4182702>Follow us on Google+</ly-as-4182702>" target="_blank"><span class="shopify-social-icon-googleplus{{ settings.social_icons_style }}"></span></a>
+{% endunless %}
+{% unless settings.instagram_url == blank %}
+<a href="{{ settings.instagram_url }}" title="<ly-as-4182703>Follow us on Instagram</ly-as-4182703>" target="_blank"><span class="shopify-social-icon-instagram{{ settings.social_icons_style }}"></span></a>
+{% endunless %}
+{% unless settings.linkedin_url == blank %}
+<a href="{{ settings.linkedin_url }}" title="<ly-as-4182704>Follow us on linkedin</ly-as-4182704>" target="_blank"><span class="shopify-social-icon-linkedin{{ settings.social_icons_style }}"></span></a>
+{% endunless %}
+{% unless settings.flickr_url == blank %}
+<a href="{{ settings.flickr_url }}" title="<ly-as-4182705>Follow us on Flickr</ly-as-4182705>" target="_blank"><span class="shopify-social-icon-flickr{{ settings.social_icons_style }}"></span></a>
+{% endunless %}
+{% unless settings.yelp_url == blank %}
+<a href="{{ settings.yelp_url }}" title="<ly-as-4182706>Look us up on Yelp</ly-as-4182706>" target="_blank"><span class="shopify-social-icon-yelp{{ settings.social_icons_style }}"></span></a>
+{% endunless %}
+{% unless settings.vimeo_url == blank %}
+<a href="{{ settings.vimeo_url }}" title="<ly-as-4182707>Follow us on Vimeo</ly-as-4182707>" target="_blank"><span class="shopify-social-icon-vimeo{{ settings.social_icons_style }}"></span></a>
+{% endunless %}
+{% unless settings.youtube_url == blank %}
+<a href="{{ settings.youtube_url }}" title="<ly-as-4182708>Follow us on YouTube</ly-as-4182708>" target="_blank"><span class="shopify-social-icon-youtube{{ settings.social_icons_style }}"></span></a>
+{% endunless %}
+{% unless settings.tumblr_url == blank %}
+<a href="{{ settings.tumblr_url }}" title="<ly-as-4182709>Come visit our blog</ly-as-4182709>" target="_blank"><span class="shopify-social-icon-tumblr{{ settings.social_icons_style }}"></span></a>
+{% endunless %}
+{% unless settings.wordpress_url == blank %}
+<a href="{{ settings.wordpress_url }}" title="<ly-as-4182709>Come visit our blog</ly-as-4182709>" target="_blank"><span class="shopify-social-icon-wordpress{{ settings.social_icons_style }}"></span></a>
+{% endunless %}
+{% unless settings.featured_blog == blank %}
+<a href="/blogs/{{ settings.featured_blog }}.atom" title="<ly-as-4182710>Subscribe to our blog</ly-as-4182710>" target="_blank"><span class="shopify-social-icon-feed{{ settings.social_icons_style }}"></span></a>
+{% endunless %}
+{% unless settings.contact_email == blank %}
+<a href="mailto:{{ settings.contact_email }}" title="<ly-as-4182711>Email us</ly-as-4182711>" target="_blank"><span class="shopify-social-icon-email{{ settings.social_icons_style }}"></span></a>
+{% endunless %}

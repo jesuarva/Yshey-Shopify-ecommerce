@@ -1,0 +1,70 @@
+{% comment %}ly_global_begin{% endcomment %}{% include 'ly-global' %}{% comment %}ly_global_end{% endcomment %}
+
+
+
+
+<div class="articles">
+
+  {% if current_tags %}
+  <h1 class="delta">{% comment %}ly_code_replace_for_[ blog.title | link_to: blog.url ]_begin{% endcomment %}{% include 'ly-title' with blog %}{{ ly_translation | link_to: blog.url }}{% comment %}ly_code_replace_end{% endcomment %} <span class="quiet">&raquo;</span> {{ current_tags.first }}</h1>
+  {% else %}
+  <h1 class="delta">{% comment %}ly_code_replace_for_[ blog.title ]_begin{% endcomment %}{% include 'ly-title' with blog %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}</h1>
+  {% endif %}
+
+  {% assign primero = 0 %}
+
+
+  {% for article in blog.articles %}
+
+  
+  {% if primero == 0 %}
+    {% assign primero = article.id %}
+  {% endif %}
+  
+  {% comment %}
+    Let's extract a blog image.
+    We will look for an image in the excerpt first, and in the blog post itself second.
+    We will remove the image suffix to grab as big an image as we can.
+  {% endcomment %}
+    
+  {% assign article_has_image = false %}
+  {% assign img_tag = '<' | append: 'img' %}
+  {% if article.excerpt_or_content contains img_tag %}
+    {% assign src = article.excerpt_or_content | split: 'src="' %}
+    {% assign src = src[1] | split: '"' | first %}
+    {% if src %}
+      {% assign article_has_image = true %}
+      {% assign image_src = src | replace: '_small', '' | replace: '_compact', '' | replace: '_medium', '' | replace: '_large', '' | replace: '_grande', '' %}
+    {% endif %}
+  {% endif %}  
+  
+  <div class="article{% if forloop.first %} first{% endif %}{% if forloop.last %} last{% endif %} clear">
+    <h2 class="title">
+      <a href="{{ article.url }}">{% comment %}ly_code_replace_for_[ article.title ]_begin{% endcomment %}{% include 'ly-title' with article %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}</a>
+    </h2>
+  </div>
+  
+{% endfor %}
+
+</div>
+
+
+<div class='articleSelected'>
+
+
+{% for article in blog.articles %}
+    {% if article.id == primero %}
+    <div class="article">
+      <h1 class="title">
+        {% comment %}ly_code_replace_for_[ article.title ]_begin{% endcomment %}{% include 'ly-title' with article %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}
+      </h1>
+      <div class="rte">
+        {% comment %}ly_code_replace_for_[ article.content ]_begin{% endcomment %}{% include 'ly-content' with article %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}
+      </div>
+    </div>
+    {% endif %}
+{% endfor %}
+</div>
+<div style='clear:both;'></div>
+
+  

@@ -1,0 +1,369 @@
+{% comment %}ly_global_begin{% endcomment %}{% include 'ly-global' %}{% comment %}ly_global_end{% endcomment %}
+
+{% comment %} TRADUCCIONES DEL BOTÓN COMPRAR {% endcomment %}
+{% if cart.attributes.language == 'ly27068' %}
+  {% assign add_to_cart = 'Añadir al carrito' %}
+  {% assign add_to_cartZoom = 'Comprar ahora' %}
+  {% assign unavailable = 'No disponible' %}
+  {% assign selectOption = '* por favor selecciona una talla' %}
+  {% assign sold_out = 'Agotado' %}
+{% else %}
+  {% assign add_to_cart = 'Add to cart' %}
+  {% assign add_to_cartZoom = 'Buy now' %}
+  {% assign unavailable = 'Unavailable' %}
+  {% assign selectOption = '* please select size option' %}
+  {% assign sold_out = 'Sold out' %}
+{% endif %} 
+  
+
+
+{% comment %}
+Re-use the 'rte' class wherever you output content that was added by a merchant using
+the Rich Text Editor ( 'rte' stands for rich text editor ).
+Style all HTML elements in that content the same way across the board.
+Use the 'rte' class in your CSS to help maintain that consistency.
+Example: the h2 element should have the same size and color in:
+- product descriptions
+- collection descriptions
+- 'page' pages' content
+- blog post
+{% endcomment %}
+
+{% if page.handle == 'shop-instagram' %}
+
+	{% section 'shopInstagramPage' %}
+
+{% elsif page.handle == 'campaign' %}
+
+	{% include 'campaign' %}
+{% else %}
+
+
+{% comment %}ly_asset_replace_for_[ 'styleSDC.css' | asset_url | stylesheet_tag ]_begin{% endcomment %}{% assign ly_asset = 'styleSDC.css' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  | stylesheet_tag }}{% comment %}ly_asset_replace_end{% endcomment %}
+
+<div class='pagina'>
+	<h1>{% comment %}ly_code_replace_for_[page.title]_begin{% endcomment %}{% include 'ly-title' with page %}{{ly_translation}}{% comment %}ly_code_replace_end{% endcomment %}</h1>
+	<div class='contenido'>
+		{% comment %}ly_code_replace_for_[ page.content ]_begin{% endcomment %}{% include 'ly-content' with page %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}
+	</div>
+  {% assign linklist = linklists['part-picker'] %}
+
+
+<!-- JESUARVA -->
+
+  {% for link in linklist.links %} 
+
+<div style="width: 80%"   class="product" itemscope itemtype="http://schema.org/Product">  
+  <meta itemprop="url" content="{{ shop.url }}{{ link.object.url }}" />
+  <meta itemprop="image" content="{{ product | img_url: 'grande' }}" />
+  <form action="/cart/add" method="post" enctype="multipart/form-data">
+
+<!--     <div class="product-photos">
+    {% comment %} SI NO HAY FOTO {% endcomment %}
+    {% if link.object.images.size == 0 %}
+      <div class="product-photo-container">
+        <img src="{{ '' | img_url: 'grande' }}" alt="" />
+      </div>
+    {% else %}
+      
+      {% comment %} FOTO DESTACADA DE VARIANTE {% endcomment %}
+      {% assign featured_image = link.object.selected_variant.featured_image | default: link.object.featured_image %}
+      <script type="text/javascript">
+        {{ featured_image | json }}
+      </script>
+      {% comment %} 
+      <div class='fotosProdMovil'>
+        <div id="slides">
+          {% for image in link.object.images %}
+              <img src="{{ image | img_url: '318x' }}" alt="{{ image.alt | escape }}" />
+          {% endfor %}
+        </div>
+      </div>
+      {% endcomment %}
+
+      {% comment %} GRID DE FOTOS DESKTOP {% endcomment %}
+      <ul class="product-photo-thumbs clearfix grid">
+        {% for image in link.object.images %}
+        <li class="product-photo-thumb two-per-row">
+          <a href="{{ image | img_url: '1024x1024' }}">
+            <img src="{{ image | img_url: '900x' }}" alt="{{ image.alt | escape }}" />
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+      {% comment %} GRID DE FOTOS MOVIL SWIPER . js {% endcomment %}
+      <div class="swiper-container">
+        <div class="swiper-wrapper">
+          {% for image in link.object.images %}
+              <div style="background-image: url({{ image | img_url: '318x' }});" class="swiper-slide"></div>
+          {% endfor %}
+        </div>
+        <div class="swiper-pagination"></div>
+      </div>
+    
+    {% endif %}
+
+    </div> -->
+    
+
+
+
+    {% comment %} FICHA DERECHA {% endcomment %}
+    <div id='select-variant' class="product-details">
+      
+      {% if collection %}
+        {% if collection.previous_product or collection.next_product %}
+        <div>     
+        {% if collection.previous_product %}
+          {% capture prev_url %}{{ collection.previous_product}}#content{% endcapture %}
+          <span class="left">{{ '<ly-as-4182883>Back</ly-as-4182883>' | link_to: prev_url }}</span>
+        {% endif %}
+        {% if collection.next_product %}
+          {% capture next_url %}{{ collection.next_product}}#content{% endcapture %}
+          <span class="right">{{ '<ly-as-4182884>Next</ly-as-4182884>' | link_to: next_url }}</span>
+        {% endif %}
+        </div>
+        {% endif %}
+      {% endif %}
+      <h1 itemprop="name">{% comment %}ly_code_replace_for_[ link.object.title ]_begin{% endcomment %}{% include 'ly-title' with product %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}</h1>
+      
+
+      {% comment %}
+        All themes by Shopify should support the Product Reviews app out of the box.
+        https://apps.shopify.com/product-reviews
+      {% endcomment %}
+      <div id="shopify-product-reviews" data-id="{{ link.object.id }}">{% comment %}ly_code_replace_for_[ link.object.metafields.spr.reviews ]_begin{% endcomment %}{% assign language = cart.attributes["language"] %}{% if language == nil %}{% assign language = shop.metafields["languages"]["default"] %}{% endif %}{% assign ns = language | append: 'spr' %}{% assign key = 'reviews' %}{% if link.object.metafields[ns][key] %}{% assign ly_translation = link.object.metafields[ns][key] %}{% else %}{% assign ly_translation =  link.object.metafields.spr.reviews  %}{% endif %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}</div>
+      
+      <div id="product-price" itemprop="offers" itemscope itemtype="http://schema.org/Offer" class="delta">
+        <meta itemprop="priceCurrency" content="{{ shop.currency }}" />
+        {% if link.object.available %}
+        <link itemprop="availability" href="http://schema.org/InStock" />
+        {% else %}
+        <link itemprop="availability" href="http://schema.org/OutOfStock" />
+        {% endif %}
+        <p>
+          {% assign variant = link.object.selected_or_first_available_variant %}
+          {% if link.object.compare_at_price > link.object.price %}
+          <span class="product-price on-sale" itemprop="price">
+            {% if cart.attributes.language == 'ly27068' %}
+              {{ variant.price | money_with_currency }}
+            {% else %}
+              {{ variant.price | money }}
+            {% endif %}
+          </span>
+          <s class="product-compare-price">
+            {% if cart.attributes.language == 'ly27068' %}
+              {{ variant.compare_at_price | money_with_currency }}
+            {% else %}
+              {{ variant.compare_at_price | money }}
+            {% endif %}
+          </s>
+          {% else %}
+          <span class="product-price" itemprop="price">
+            {% if link.object.price_varies %}From{% endif %}
+              {% if cart.attributes.language == 'ly27068' %}
+                {{ link.object.price | money_with_currency | remove: ".00" }}
+              {% else %}
+                {{ link.object.price | money | remove: ".00" }}
+              {% endif %}
+              {% if on_sale %}
+              <s class="compare-at-price">{{ link.object.compare_at_price | money }}</s>
+            {% endif %}
+          </span>
+          {% endif %}
+          <span class='setTopBottom'></span>
+        </p>
+      </div>
+      {% capture desc %}
+        {% comment %}ly_code_replace_for_[ link.object.description ]_begin{% endcomment %}{% include 'ly-description' with product %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}
+      {% endcapture %}
+      {% assign short_desc = desc | split: '<!-- split -->' | first %}
+      {% assign long_desc = desc | split: '<!-- split -->' | last %}
+
+      <div id="product-description" class="rte" itemprop="description">
+        {{ short_desc }}
+      </div>
+      
+      {% comment %} FRASE TATUAJE {% endcomment %}
+      <div class='tatuaje'>
+        <!--
+        <p><ly-as-4368685>We will send you an YSHEYGirl set, a see-through pouch & cute golden tattoos with every order!</ly-as-4368685></p>
+        <br>
+        <br>
+        <!--
+        <p><ly-as-4331999>If the size you are looking for is out of stock, send us an email or click on</ly-as-4331999> </p>
+          <div class="hasWindow">
+            <a href=""><ly-as-4332000>CAN WE HELP YOU?</ly-as-4332000></a>
+            <div class='window' style='display:none;'>
+              <div class='title'>
+                {% comment %}ly_code_replace_for_[ pages.need-some-help.title ]_begin{% endcomment %}{% include 'ly-title' with pages.need-some-help %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}
+              </div>
+              <div class='content'>
+                {% comment %}ly_code_replace_for_[ pages.need-some-help.content ]_begin{% endcomment %}{% include 'ly-content' with pages.need-some-help %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}
+              </div>
+            </div>
+          </div>
+          <p><ly-as-4332001>and we will contact you when it is back in stock.</ly-as-4332001></p>
+        </p>
+        -->
+      </div>
+
+      {% comment %} Asigna hide_default_title para uso Shopify {% endcomment %}
+      {% assign hide_default_title = false %}
+      {% if link.object.variants.size == 1 and link.object.variants.first.title contains 'Default' %}
+        {% assign hide_default_title = true %}
+      {% endif %}
+
+      {% comment %} VARIANTES {% endcomment %}
+      <div id="product-variants" class="masUnidades {% if hide_default_title %} hidden{% endif %}">
+        <select id="product-select" name="id" {% if link.object.options.[0] == 'Title' && link.object.options.[0] == null %} style="visibility:hidden;" {% endif %}>
+        <option value='' selected="selected"></option>
+        {% for variant in link.object.variants %}
+          <option{% if forloop.length <= 1 %}
+            <option {% if variant == link.object.selected_or_first_available_variant %} selected="selected" {% endif %} data-sku="{{ variant.sku }}" value="{{ variant.id }}">{% comment %}ly_code_replace_for_[ variant.title ]_begin{% endcomment %}{% include 'ly-title' with variant %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %} - {{ variant.price | money_with_currency }}</option>
+          {% endif %}
+           <ly-as-4182886>value="</ly-as-4182886>{{ variant.id }}">
+          {% comment %}ly_code_replace_for_[ variant.title ]_begin{% endcomment %}{% include 'ly-title' with variant %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %} - {{ variant.price | money }}
+          </option>
+        {% endfor %}
+        </select>
+        {% if link.object.available and link.object.variants.size > 1 %}
+          {% for option in link.object.options %}
+            {% include 'swatch' with option %}
+          {% endfor %}
+        {% endif %}
+        <div class='alertAdd'></div>
+        <span class='ultimasUd'><ly-as-4182887>Last units</ly-as-4182887></span>
+      </div>
+      
+      {% comment %} BOTÓN COMPRAR {% endcomment %}        
+      <div class='btn_add'>
+        <div class='enlacesBag'>
+          <div class='hasWindow'>
+            {% comment %}
+            <a href="" id='sizing'>Sizing</a>
+            {% endcomment %}
+            <a class='sizingBtn' href="pages/perfect-fit-guarantee">
+              <ly-as-4182888>Sizing</ly-as-4182888>
+            </a>
+            <div class='window' style='display:none;'>
+              <div class='title'>
+                {% comment %}ly_code_replace_for_[ pages.perfect-fit-guarantee.title ]_begin{% endcomment %}{% include 'ly-title' with pages.perfect-fit-guarantee %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}
+              </div>
+              <div class='content'>
+                {% comment %}ly_code_replace_for_[ pages.perfect-fit-guarantee.content ]_begin{% endcomment %}{% include 'ly-content' with pages.perfect-fit-guarantee %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}
+              </div>
+            </div>
+          </div>
+          
+          <a class='description' href=""><ly-as-4182889>Description</ly-as-4182889></a>
+        </div>
+        <div id="product-add">
+          <input type="submit" name="add" id="add" class="primary button" value="{{ add_to_cart | escape }}">
+          <a class='btnAddPr'><div style="position:absolute; left:0; right:0; top:0; bottom:0; cursor: pointer; display:none;" id="hideInput"></div></a>
+        </div>
+        <div class='enlacesBag'>
+          <div class="hasWindow">
+            <a class='enlb paylater' href="/pages/pay-later">
+                <ly-as-4182890>Pay Later</ly-as-4182890>
+            </a>
+            <div class='window' style='display:none;'>
+              <div class='title'>
+                {% comment %}ly_code_replace_for_[ pages.pay-later.title ]_begin{% endcomment %}{% include 'ly-title' with pages.pay-later %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}
+              </div>
+              <div class='content'>
+                {% comment %}ly_code_replace_for_[ pages.pay-later.content ]_begin{% endcomment %}{% include 'ly-content' with pages.pay-later %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}
+              </div>
+            </div>
+          </div>
+          <div class="hasWindow">
+            <a class='enlb shipping' href="/pages/free-returns-exchanges">
+              <ly-as-4241518>Worldwide Shipping</ly-as-4241518>
+            </a>
+            <div class='window' style='display:none;'>
+              <div class='title'>
+                {% comment %}ly_code_replace_for_[ pages.24h-shipping.title ]_begin{% endcomment %}{% include 'ly-title' with pages.24h-shipping %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}
+              </div>
+              <div class='content'>
+                {% comment %}ly_code_replace_for_[ pages.24h-shipping.content ]_begin{% endcomment %}{% include 'ly-content' with pages.24h-shipping %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {% comment %} ZONA FACEBOOK WHATSAPP {% endcomment %}
+      <div class="shareProduct">
+        <div class='iconShare'>
+          <a href="whatsapp://send?text=YSHEY | {% comment %}ly_code_replace_for_[link.object.title]_begin{% endcomment %}{% include 'ly-title' with product %}{{ly_translation}}{% comment %}ly_code_replace_end{% endcomment %}. {{ shop.url }}{{ link.object.url }}" data-action="share/whatsapp/share"><img src="{% comment %}ly_asset_replace_for_[ 'whatsapp.svg' | asset_url ]_begin{% endcomment %}{% assign ly_asset = 'whatsapp.svg' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}"></a>
+          <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u={{ shop.url }}{{ link.object.url }}"><img src="{% comment %}ly_asset_replace_for_[ 'facebookSh.svg' | asset_url ]_begin{% endcomment %}{% assign ly_asset = 'facebookSh.svg' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}"></a>
+        </div>
+        <h4><ly-as-4750969>Like it. Share it.</ly-as-4750969></h4>
+      </div>
+      
+      
+      
+       
+    </div><!-- .product-details -->
+
+	<!--Spice Product Kits Child Product Lists Starts-->
+	<div id="spicegems_metafields_data_div" data-default_variant="{{link.object.selected_or_first_available_variant.id}}" style="display:none;visibility:hidden;">
+	{{ link.object.metafields['spice_product_kits'] | json }}
+	</div>
+	<!--Spice Product Kits Child Product Lists End-->
+
+	  <!--   <div class='fotos-zoom'>
+	      
+	      {% comment %} FOTOS ZOOM © . js {% endcomment %}
+	      <div class="swiper-container2">
+	        <div class="swiper-wrapper">
+	          {% for image in link.object.images %}
+	              <div style="background-image: url({{ image | img_url: '1400x' }});" class="swiper-slide"></div>
+	          {% endfor %}
+	        </div>
+	      </div>
+	      <a class='prev swiper-button-prev'><span></span></a>
+	      <a class='next swiper-button-next'><span></span></a>
+	      <a class='close'></a>
+	    </div> -->
+	    {% comment %} Boton comprar oculto movil/zoom {% endcomment %}
+	      <div class='bandaBajaDesc'>
+	        <div class='centroBtn'> 
+	          <div id="product-add">
+	            <input type="submit" name="add" id="addT" class="primary button" value="{{ add_to_cart | escape }}">
+	            <input type="submit" name="add" id="addT" class="primary button zoomB" value="{{ add_to_cartZoom | escape }}">
+	            <a class='btnAddPr'><div style="position:absolute; left:0; right:0; top:0; bottom:0; cursor: pointer; display:none;" id="hideInputT"></div></a>
+	          </div>
+	          <span class="product-price" itemprop="price">
+	            {% if link.object.price_varies %}<ly-as-4182885>From</ly-as-4182885>{% endif %}
+	              {{ link.object.price | money | remove: ".00" }}
+	              {% if on_sale %}
+	              <s class="compare-at-price">{{ link.object.compare_at_price | money }}</s>
+	            {% endif %}
+	          </span>
+	        </div>
+	      </div>
+	  </form>
+
+	<!--Spice Product Kits lineitems script Starts-->
+
+	{{ 'https://product-kits.spicegems.com/bundle/script-tags/6c0d13d3ad6cc317017872e51d01b238.js?v=dfhjfhfjhhfjdfewqpt&shop=yshey.myshopify.com' | script_tag }}
+
+	<!--Spice Product Kits lineitems script End-->
+
+</div>
+  {% endfor %}
+
+<!-- END JESUARVA -->
+
+</div>
+
+
+{% endif %}
+
+{% comment %}
+<h1>{% comment %}ly_code_replace_for_[ page.title ]_begin{% endcomment %}{% include 'ly-title' with page %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}</h1>
+<div class="rte">
+  {% comment %}ly_code_replace_for_[ page.content ]_begin{% endcomment %}{% include 'ly-content' with page %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}
+</div>
+{% endcomment %}

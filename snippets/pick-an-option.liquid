@@ -1,0 +1,30 @@
+{% comment %}ly_global_begin{% endcomment %}{% include 'ly-global' %}{% comment %}ly_global_end{% endcomment %}{% comment %}
+  See https://docs.shopify.com/themes/customization/products/how-to-add-a-pick-an-option-to-drop-downs
+{% endcomment %}
+
+{% unless product.selected_variant %}
+  {% if product.variants.size > 1 %}
+    <script>
+    var $addToCartForm = $('form[action="/cart/add"]');
+    if (window.MutationObserver && $addToCartForm.length) {
+      if (typeof observer === 'object' && typeof observer.disconnect === 'function') {
+        observer.disconnect();
+      }
+      var config = { childList: true, subtree: true };
+      var observer = new MutationObserver(function() {      
+        {% for option in product.options %}
+          $('.single-option-selector:eq({{ forloop.index0 }})')
+            .filter(function() { 
+              return $(this).find('option').size() > 1  
+            })
+            .prepend('<option value="">' + {{ product.options[forloop.index0] | json }} + '</option>')
+            .val('')
+            .trigger('change');
+        {% endfor %}
+        observer.disconnect();
+      });  
+      observer.observe($addToCartForm[0], config);
+    } 
+    </script>  
+  {% endif %}
+{% endunless %}

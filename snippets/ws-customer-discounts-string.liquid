@@ -1,0 +1,24 @@
+{% capture discountGroupId %}{{ customer.metafields.wholesaler_pro.discount_group_id }}{% endcapture %}
+{% capture discountGroup %}{{ shop.metafields.wholesaler_pro[discountGroupId] }}{% endcapture %}
+
+{%- capture json_error -%}
+    {%- include 'json_decode' jd__namespace:'discount_group' jd__data:discountGroup -%}
+{%- endcapture -%}
+{%- include 'jd__function' with 'values|discount_group.discounts' -%}{%- assign discounts = jd__yield_1 -%}
+
+{% assign customerDiscounts = '' %}
+{%- include 'jd__function' with 'keys|discount_group.discounts' -%}{%- assign discount_keys = jd__yield_1 -%}
+{%- for key in discount_keys -%}
+  {% assign discount_type_key = key | append: '.type' %}
+  {% capture discount_type %}{% include 'json_decode_output' with discount_type_key %}{% endcapture %}
+  {% assign discount_value_key = key | append: '.value' %}
+  {% capture discount_value %}{% include 'json_decode_output' with discount_value_key %}{% endcapture %}
+  {% assign discount_resource_type_key = key | append: '.resource.type' %}
+  {% capture discount_resource_type %}{% include 'json_decode_output' with discount_resource_type_key %}{% endcapture %}
+  {% assign discount_resource_id_key = key | append: '.resource.id' %}
+  {% capture discount_resource_id %}{% include 'json_decode_output' with discount_resource_id_key %}{% endcapture %}
+  {{discount_resource_type | append: discount_resource_id | append: ':' | append: discount_value | append: ':' | append: discount_type | append: '|'}}
+  {% capture cutomerDiscounts %}{{customerDiscounts | append: discount_resource_type | append: discount_resource_id | append: ':' | append: discount_value | append: ':' | append: discount_type | append: '|'}}{% endcapture %}
+{%- endfor -%}
+
+{{- customerDiscounts -}}

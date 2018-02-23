@@ -1,0 +1,311 @@
+<style>
+  .wholesale-products-list {
+    display: none;
+  }
+  
+  .wholesale-products-list.active {
+    display: block;
+  }
+
+  .wholesale-product-item:first-child {
+  	margin-top: 0 !important;  
+  }
+  
+  .wholesale-product-item .wholesale-product-title {
+    display: inline-block;
+    vertical-align: top;
+  }
+  .wholesale-product-item .wholesale-variant-title,
+  .wholesale-product-item .wholesale-variant-price {
+    font-size: 0.8em;
+  }
+  .wholesale-product-item .wholesale-variants-table {
+  	width: 100%; 
+  }
+  .wholesale-product-item .wholesale-variants-table th,
+  .wholesale-product-item .wholesale-variants-table td {
+    padding: 2px;
+    text-align: center; 
+  }
+  .wholesale-product-item .wholesale-variants-table th {
+  	border: 1px solid black;
+  }
+  .wholesale-product-item .wholesale-variants-table .wholesale-variant-quantity {
+  	padding: 3px;
+    max-width: 64px;
+    text-align: center;
+    line-height: 1;
+    font-style: normal;
+    font-size: 1em;
+  }
+  
+  #wholesale-checkout-wrapper {
+    width: 320px;
+    position: fixed;
+    bottom: 80px;
+    z-index: 99999;
+  }
+  
+  #wholesale-checkout-wrapper #wholesale-checkout-btn {
+    width: 100%;
+    border: 0;
+    height: 68px;
+    background-color: #FF0068;
+    color: #fff;
+    font-family: 'AzoSans-Bold';
+    text-transform: uppercase;
+    font-size: 25px;
+    padding-top: 11px;
+    letter-spacing: 3px;
+    transition: opacity .3s ease-in-out;
+  }
+  
+  #wholesale-checkout-wrapper #wholesale-checkout-btn.processing {
+    opacity: 0.6;
+  }
+  
+  .wholesale-products-list img {
+    opacity: 1;
+    transition: opacity 0.3s;
+  }
+
+  .wholesale-products-list img[data-src] {
+    opacity: 0;
+  }
+  
+  .collection-selector-wrapper {
+    text-align: center;
+    padding: 20px 10px 0 10px;
+  }
+  
+  .collection-selector-wrapper label {
+	display: inline-block;
+  }
+
+  #collection-selector {
+    background: transparent;
+    border: none;
+    text-transform: uppercase;
+    font-family: 'AzoSans-Light';
+    color: #535860;
+    letter-spacing: 1.3px;
+    font-style: initial;
+  }
+</style>
+
+{% if customer and customer.tags contains 'wholesaler' %}
+  {% assign customer_discount_rate = 0.7 %}
+  {% for tag in customer.tags %}
+    {% if tag contains 'wholesaler_price_rate_' %}
+      {% assign customer_discount_rate = tag | split: 'wholesaler_price_rate_' | last %}
+      {% break %}
+    {% endif %}
+  {% endfor %}
+
+  <div id="wholesale-checkout-wrapper">
+    <input type="submit" id="wholesale-checkout-btn" class="primary button" value="Place Order">
+  </div>
+
+  {% assign collectionHandles = 'all-1' | split: ',' %}
+  {% assign collectionsWithInventoryTracking = 'all-1' %}
+
+  {% if collectionHandles.size > 1%}
+  <div class="collection-selector-wrapper" >
+    <label for="collection-selector" >Choose Collection:</label>
+    <select name="collection-selector" id="collection-selector" >
+      {% for collectionHandle in collectionHandles %}
+      {% assign collection = collections[collectionHandle] %}
+      <option value="{{ collectionHandle }}">{{ collection.title }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  {% endif %}
+
+  {% for collectionHandle in collectionHandles %}
+  <ul class="grid clearfix wholesale-products-list wholesale-collection-{{ collectionHandle }} {% if forloop.first == true %}active{% endif %}" >
+    {% assign currentCollection = collections[collectionHandle] %}
+    {% paginate currentCollection.products by 1000 %}
+    {% for product in currentCollection.products %}
+    {% include 'wholesale-product-item', customer_discount_rate: customer_discount_rate %}
+    {% endfor %}
+    {% endpaginate %}
+  </ul>
+  {% endfor %}
+	
+  <script type="text/javascript">
+    function getNonEmptyVariants() {
+      return jQuery('.wholesale-variant-quantity')
+        .filter(function(el) { return jQuery(this).val() > 0 })
+        .toArray();
+    }
+    
+    function enoughStockForCurrentOrder() {
+      var variantElements = getNonEmptyVariants();
+      var outOfStock = variantElements.reduce(function(total, variantEl) {
+        return (total || isOutOfStock(variantEl));
+      }, false);
+      return !outOfStock;
+    }
+    
+    function isOutOfStock(variantElement) {
+      if (isInventoryTracked(variantElement)) {
+        var $el = $(variantElement);
+        var stock = parseInt($el.data('variant-stock'));
+        var quantityOrdered = parseInt($el.val());
+        return (quantityOrdered > stock);
+      } else {
+        return false;
+      }
+    }
+    
+    function isInventoryTracked(variantElement) {
+      return !!$(variantElement).data('variant-stock');
+    }
+
+    function buildDraftOrder() {
+      var customerId = {{customer.id}};
+      return getNonEmptyVariants()
+        .reduce(function(total, current) {
+          var variantQuantityPair = buildVariantIdQuantityPair(current);
+          if (variantQuantityPair) total.draft_order.line_items.push(variantQuantityPair);
+          return total;
+      }, {draft_order: {line_items: [], customer: {id: customerId}, use_customer_default_address: true}});
+    }
+
+    function buildVariantIdQuantityPair(element) {
+      try {
+        var $el = $(element);
+        var variantId = $el.data('variant-id');
+        var variantPrice = $el.data('variant-price');
+        var bundleSkuString	 = $el.data('bundle-sku') || '';
+        var productTags = $el.data('product-tags') || '';
+        var quantity = $el.val();
+        var discountRate = '{{ customer_discount_rate | strip }}';
+        var appliedDiscount = buildAppliedDiscount(discountRate, variantPrice, quantity);
+      	var hasAccessoriesTag = productTags.split(',').indexOf('accessories') >= 0;
+        var properties = hasAccessoriesTag ? {} : buildProperties(bundleSkuString, parseInt(quantity));
+        return {variant_id: variantId, quantity: parseInt(quantity), applied_discount: appliedDiscount, properties: properties};
+      } catch(err) {
+        return null;
+      }
+    }
+
+    function buildProperties(bundleSkuString, quantity) {
+      var skus = bundleSkuString.split('!~~');
+      var properties = skus.reduce(function(total, skuString, i) {
+        var propertyValue = skuString.replace(/(Quantity:\s*)\d*/g, '$1' + quantity);
+        var property = {
+          name: 'Product ' + (i+1),
+          value: propertyValue
+        };
+        total.push(property);
+        return total;
+      }, []);
+      return properties;
+    }
+
+    function buildAppliedDiscount(discountRate, price, quantity) {
+      var discount = 1 - discountRate;
+      var amount = Math.floor(price * quantity * discount) / 100;
+      return {
+        title: 'Wholesale',
+        description: 'Wholesale',
+        value_type: 'percentage',
+        value: Number((discount * 100).toFixed(2)),
+        amount: amount
+      }
+    }
+
+    function submitDraftOrder(draftOrder, errCallback) {
+      var shopName = '{{ shop.permanent_domain | remove: ".myshopify.com" }}';
+      var payload = {payload: draftOrder};
+      return jQuery.ajax({
+        type: 'POST',
+        url: 'https://wholesaler-pro.herokuapp.com/storefront/proxy/'+shopName+'/admin/draft_orders.json',
+        data: JSON.stringify(payload),
+        dataType: 'json',
+        crossDomain: true,
+        success: submitDraftOrderSuccess,
+        error: function() {
+          notifyError('ShopifyAPIError', arguments[2], arguments[0].responseText);
+          alert('Error processing order');
+          errCallback();
+        },
+        contentType: 'application/json'
+      });
+    }
+
+    function submitDraftOrderSuccess(draftOrder) {
+      // window.location = draftOrder.draft_order.invoice_url;
+      window.location = '/pages/thank-you-for-your-order';
+    }
+    
+    function notifyError(name, message, stack) {
+      try {
+        var body = {
+          name: name,
+          message: message,
+          stack: stack
+        };
+        return jQuery.ajax({
+          type: 'POST',
+          url: 'https://7pqlxipdkl.execute-api.eu-west-1.amazonaws.com/dev/notify',
+          data: JSON.stringify(body),
+          dataType: 'json',
+          crossDomain: true,
+          contentType: 'application/json'
+        });
+      } catch(err) {
+        console.log(err);
+      }
+    }
+    
+    function showCollection(collectionHandle) {
+      var collectionClassPrefix = 'wholesale-collection-';
+      $('.wholesale-products-list').removeClass('active');
+      var collectionClass = ['.', collectionClassPrefix, collectionHandle].join('');
+      $(collectionClass).addClass('active');
+    }
+
+    jQuery(function() {
+      $(document).on('click', '#wholesale-checkout-btn', function() {
+        var $el = $(this);
+        var enableButton = function() {
+          $el.removeClass('processing');
+          $el.val('PLACE ORDER');
+          $el.prop('disabled', false);
+        };
+        $el.addClass('processing');
+        $el.val('Placing order...');
+        $el.prop('disabled', true);
+        var draftOrder = buildDraftOrder();
+        return submitDraftOrder(draftOrder, enableButton);
+      });
+      
+      $('#collection-selector').on('change', function() {
+        var collectionHandle = $(this).val();
+        showCollection(collectionHandle);
+      });
+      
+      [].forEach.call(document.querySelectorAll('img[data-src]'), function(img) {
+        img.setAttribute('src', img.getAttribute('data-src'));
+        img.onload = function() {
+          img.removeAttribute('data-src');
+        };
+      });
+      
+      $(document).on('change', '.wholesale-variant-quantity', function() {
+        if (isOutOfStock(this)) {
+          var $el = $(this);
+          var stock = $el.data('variant-stock');
+          $el.val('');
+          alert(['There are', Math.max(0, stock), 'items left. Please, order a lower quantity.'].join(' '));
+        }
+      });
+    });
+  </script>
+{% else %}
+  <script type="text/javascript">
+    window.location = '{{ shop.url }}'
+  </script>
+{% endif %}

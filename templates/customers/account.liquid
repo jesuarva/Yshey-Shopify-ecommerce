@@ -1,0 +1,63 @@
+{% comment %}ly_global_begin{% endcomment %}{% include 'ly-global' %}{% comment %}ly_global_end{% endcomment %}
+{% layout settings.customer_layout %}
+
+<div id="admin_header">
+  <h2 class="title"><ly-as-4464699>Orders</ly-as-4464699></h2>
+</div>
+
+
+<div id="customer_orders">
+  {% if customer.orders.size != 0 %}
+  <table>
+    <thead>
+      <tr>
+        <th class="order_number"><ly-as-4182770>Order</ly-as-4182770></th>
+        <th class="date"><ly-as-4182771>Date</ly-as-4182771></th>
+        <th class="payment_status"><ly-as-4182772>Payment Status</ly-as-4182772></th>
+        <th class="fulfillment_status"><ly-as-4182773>Fulfillment Status</ly-as-4182773></th>
+        <th class="total"><ly-as-4182774>Total</ly-as-4182774></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for order in customer.orders %}
+      <tr class="{% cycle 'odd', 'even' %} {% if order.cancelled %}cancelled_order{% endif %}">
+        <td>{{ order.name | link_to: order.customer_url }}</td>
+        <td><span class="note">{{ order.created_at | date: "%b %d, %Y" }}</span></td>
+        <td><span class="status_{{ order.financial_status }}">{{ order.financial_status }}</span></td>
+        <td><span class="status_{{ order.fulfillment_status }}">{{ order.fulfillment_status }}</span></td>
+        <td><span class="total money">{{ order.total_price | money }}</span></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    <p><ly-as-4182775>You haven't placed any orders yet.</ly-as-4182775></p>
+  {% endif %}
+</div>
+
+<div id="customer_sidebar">
+  <div id="customer_detail" class="group">
+    <h5 class="name">{{ customer.name }}</h5>
+    <p class="email note">{{ customer.email }}</p>
+    <div class="address note">
+      {% if customer.default_address != nil %}
+        <p>{{ customer.default_address.address1 }}</p>
+        {% if customer.default_address.address2 != "" %}
+          <p>{{ customer.default_address.address2 }}</p>
+        {% endif %}
+        <p>{{ customer.default_address.city}}, {% if address.province %}{{customer.default_address.province }}, {% endif %}{{customer.default_address.country}}</p>
+        <p>{{ customer.default_address.zip}}</p>
+        <p>{{ customer.default_address.phone }}</p>
+      {% endif %}
+      <a id="view_address" href="/account/addresses"><ly-as-4182776>View Addresses (</ly-as-4182776>{{ customer.addresses_count }})</a><br><br>
+      <a id="returns" href="/pages/returns"><ly-as-4464700>Returns / Devoluciones</ly-as-4464700></a>
+      {% if customer and customer.tags contains 'wholesaler' %}
+      	<br>
+        <a id="wholesale-catalog" href="/pages/wholesale-catalog">Wholesale Catalog</a>
+      {% endif %}
+    </div>
+
+  </div>
+</div>
+
+<div style="clear:both;"></div>

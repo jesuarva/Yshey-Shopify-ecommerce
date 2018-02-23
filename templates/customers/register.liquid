@@ -1,0 +1,44 @@
+{% comment %}ly_global_begin{% endcomment %}{% include 'ly-global' %}{% comment %}ly_global_end{% endcomment %}
+{% layout settings.customer_layout %}
+
+<div id="template">
+  <div id="customer">
+	  <!-- Create Customer -->
+	  <div id="create-customer">
+	    <div class="template_header">
+	      <h2 class="title"><ly-as-4464703>Create An Account</ly-as-4464703></h2>
+	    </div>
+
+	    {% form 'create_customer' %}
+	      {{ form.errors | default_errors }}
+
+	      <div class="clearfix large_form">
+	        <input type="text" value="" name="customer[first_name]" id="first_name" class="large" size="30" placeholder="<ly-as-4182838>First Name</ly-as-4182838>" />
+	      </div>
+
+	      <div class="clearfix large_form">
+	        <input type="text" value="" name="customer[last_name]" id="last_name" class="large" size="30" placeholder="<ly-as-4182839>Last Name</ly-as-4182839>"/>
+	      </div>
+
+	      <div class="clearfix large_form">
+	        <input type="email" value="" name="customer[email]" id="email" class="large" size="30" placeholder="<ly-as-4182840>Email Address</ly-as-4182840>"/>
+	      </div>
+
+	      <div class="clearfix large_form">
+	        <input type="password" value="" name="customer[password]" id="password" class="large password" size="30" placeholder="<ly-as-4182841>Password</ly-as-4182841>"/>
+	      </div>
+			
+	      <div class="action_bottom">
+	        <input class="btn" type="submit" value="<ly-as-4182837>Create</ly-as-4182837>" />
+	        <span class="note"><ly-as-4182834>or</ly-as-4182834> <a href="{{ shop.url }}"><ly-as-4182835>Return to Store</ly-as-4182835></a></span>
+	      </div>
+	      <div class='marketing'>
+			  <input type="hidden" name="customer[accepts_marketing]" value="" />
+			  <input type="checkbox" name="customer[accepts_marketing]" checked="checked" />
+			  <ly-as-4182836>Subscribe to stay updated with new products and offers!</ly-as-4182836>
+			</div>
+		  <input type="hidden" name="customer[tags]" value="ly#{% assign language = cart.attributes["language"] %}{% if language == nil %}{% assign language = shop.metafields["languages"]["default"] %}{% endif %}{{ language }}ly#"/>
+	    {% endform %}
+	  </div><!-- /#create-customer -->
+  </div>
+</div>

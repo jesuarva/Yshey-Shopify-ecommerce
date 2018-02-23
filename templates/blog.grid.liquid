@@ -1,0 +1,31 @@
+{% comment %}ly_global_begin{% endcomment %}{% include 'ly-global' %}{% comment %}ly_global_end{% endcomment %}
+{% assign products_per_page = settings.products_per_row | times: settings.number_of_rows %}
+{% assign numbers = 'one, two, three, four, five, six' | split: ',' %}
+{% assign products_per_row = settings.products_per_row | minus: 1 %}
+{% assign products_per_row = numbers[products_per_row] | strip | append: '-per-row' %}
+
+{% paginate blog.articles by products_per_page %}
+
+{% if current_tags %}
+<h1 class="delta">{% comment %}ly_code_replace_for_[ blog.title | link_to: blog.url ]_begin{% endcomment %}{% include 'ly-title' with blog %}{{ ly_translation | link_to: blog.url }}{% comment %}ly_code_replace_end{% endcomment %} <span class="quiet">»</span> {{ current_tags.first }}</h1>
+{% else %}
+<h1 class="delta">{% comment %}ly_code_replace_for_[ blog.title ]_begin{% endcomment %}{% include 'ly-title' with blog %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}</h1>
+{% endif %}
+
+<ul class="grid clearfix">
+  {% for article in blog.articles %}
+    {% include 'article-grid-item' with products_per_row %}
+  {% endfor %}
+</ul>
+  
+{% if paginate.pages > 1 %}
+<div class="pagination">
+{% comment %}
+  When paginating blog articles, a previous article is actually a newer article, not an older one,
+  because blog articles are shown and paginated in a reversed chronological order.
+  The word 'previous' can be confusing, hence we'll change it.
+{% endcomment %}
+{{ paginate | default_pagination | replace: '<ly-as-4182741>Previous</ly-as-4182741>', '<ly-as-4182742>Newer articles</ly-as-4182742>' | replace: '<ly-as-4182743>Next</ly-as-4182743>', '<ly-as-4182744>Older articles</ly-as-4182744>' }}
+{% endif %}
+
+{% endpaginate %}

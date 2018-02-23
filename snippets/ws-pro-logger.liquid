@@ -1,0 +1,5 @@
+{% if debugOn %}
+<script type="text/javascript">
+  console.log('{{ label }}','{{ message | strip_newlines | strip }}');
+</script>
+{% endif %}

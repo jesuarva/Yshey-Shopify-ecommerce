@@ -1,0 +1,28 @@
+{% comment %}ly_global_begin{% endcomment %}{% include 'ly-global' %}{% comment %}ly_global_end{% endcomment %}{% layout none %}<?xml version="1.0" encoding="UTF-8" ?>
+<rss xmlns:g="http://base.google.com/ns/1.0" version="2.0">
+<channel>
+    <title>{{langify_shop_name | escape }} <ly-as-4891498>Products</ly-as-4891498></title>
+
+    <link>{{shop.url}}</link>
+{% paginate collections.all.products by 1000 %}{% for product in collections.all.products %}
+   <!-- Item #{{ forloop.index }} -->
+   <item>
+   <title><![CDATA[{% comment %}ly_code_replace_for_[ product.title | strip_html | strip_newlines | escape | replace: 'amp;', 'and' | replace: '&#38;', 'and' | replace: "Ã©", "e" | replace: "Ã ", "a" ]_begin{% endcomment %}{% include 'ly-title' with product %}{{ ly_translation | strip_html | strip_newlines | escape | replace: 'amp;', 'and' | replace: '&#38;', 'and' | replace: "Ã©", "e" | replace: "Ã ", "a" }}{% comment %}ly_code_replace_end{% endcomment %}]]></title>
+   <g:brand>{% comment %}ly_code_replace_for_[product.vendor | escape ]_begin{% endcomment %}{% include 'ly-vendor' with product %}{{ly_translation | escape }}{% comment %}ly_code_replace_end{% endcomment %}</g:brand>
+   <g:product_type>{% comment %}ly_code_replace_for_[product.type | escape ]_begin{% endcomment %}{% include 'ly-type' with product %}{{ly_translation | escape }}{% comment %}ly_code_replace_end{% endcomment %}</g:product_type>
+   <g:id>{{product.id}}</g:id>
+   <g:condition><ly-as-4891499>New</ly-as-4891499></g:condition>
+   <description><![CDATA[{% comment %}ly_code_replace_for_[ product.description | strip_html | strip_newlines | replace: 'amp;', 'and' | replace: '&#38;', 'and' | replace: "..", ". " | replace: "  ", " " | replace: "â€˜", "&#39;" | replace: "â€™", "&#39;" | replace: "&#8216;", "&#39;" | replace: "&#8217;", "&#39;" | replace: "&#8217;", "&#39;" | replace: "Ã¢â‚¬â„¢", "&#39;" | replace: "Ã¢â‚¬Å“", "&#39;" | replace: "Ã¢â‚¬Ëœ", "&#39;"  | replace: "Ã‚Â´", "&#39;" | replace: "â€œ", "&#34;" | replace: "â€", "&#34;" | replace: "&#8211;", "-" | replace: "Ã¢â‚¬â€œ", "-" | replace: "Ã¢â‚¬â€", "-" | replace: "â€“", "&mdash;" | replace: "â€”", "&mdash;" | replace: "%", "&#37;" | replace: "Ã‚Â©", "&copy;" | replace: "Ã‚Â®", "&reg;" | replace: "Ã¢â€žÂ¢", "&trade;" | replace: "Ã‚Â£", "&pound;" | replace: "Ã¯Â¿Â­", "&#42;" | replace: "Ã¢â‚¬Â¢", "&#42;" | replace: "Ã¢â‚¬Â", "&#39;" | replace: "&#233;", "e" | replace: "Ã©", "e" | replace: "Ã ", "a" | replace: "Ã³", "o" | replace: "Ãª", "e" | replace: "ÃƒËœ", "O" | replace: "&#8482;", "" | replace: "&#174;", "" ]_begin{% endcomment %}{% include 'ly-description' with product %}{{ ly_translation | strip_html | strip_newlines | replace: 'amp;', 'and' | replace: '&#38;', 'and' | replace: "..", ". " | replace: "  ", " " | replace: "â€˜", "&#39;" | replace: "â€™", "&#39;" | replace: "&#8216;", "&#39;" | replace: "&#8217;", "&#39;" | replace: "&#8217;", "&#39;" | replace: "Ã¢â‚¬â„¢", "&#39;" | replace: "Ã¢â‚¬Å“", "&#39;" | replace: "Ã¢â‚¬Ëœ", "&#39;"  | replace: "Ã‚Â´", "&#39;" | replace: "â€œ", "&#34;" | replace: "â€", "&#34;" | replace: "&#8211;", "-" | replace: "Ã¢â‚¬â€œ", "-" | replace: "Ã¢â‚¬â€", "-" | replace: "â€“", "&mdash;" | replace: "â€”", "&mdash;" | replace: "%", "&#37;" | replace: "Ã‚Â©", "&copy;" | replace: "Ã‚Â®", "&reg;" | replace: "Ã¢â€žÂ¢", "&trade;" | replace: "Ã‚Â£", "&pound;" | replace: "Ã¯Â¿Â­", "&#42;" | replace: "Ã¢â‚¬Â¢", "&#42;" | replace: "Ã¢â‚¬Â", "&#39;" | replace: "&#233;", "e" | replace: "Ã©", "e" | replace: "Ã ", "a" | replace: "Ã³", "o" | replace: "Ãª", "e" | replace: "ÃƒËœ", "O" | replace: "&#8482;", "" | replace: "&#174;", "" }}{% comment %}ly_code_replace_end{% endcomment %}]]></description>
+   <g:image_link>https:{{product.featured_image | product_img_url: '<ly-as-4891500>800x800</ly-as-4891500>'}}</g:image_link>
+   <link>{{shop.url}}{{product.url}}</link>
+   <g:price>{{product.price | money_without_currency}}</g:price>
+   <g:quantity>1</g:quantity>
+   <g:payment_accepted><ly-as-4891501>Visa</ly-as-4891501></g:payment_accepted>
+   <g:payment_accepted><ly-as-4891502>MasterCard</ly-as-4891502></g:payment_accepted>
+   <g:payment_notes><ly-as-4891503>We also accept Paypal</ly-as-4891503></g:payment_notes>
+   <g:google_product_category>166</g:google_product_category>
+   <availability><ly-as-4891504>in stock</ly-as-4891504></availability>
+ </item>
+{% endfor %}{% endpaginate %}
+</channel>
+</rss>

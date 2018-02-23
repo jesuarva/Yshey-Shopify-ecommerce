@@ -1,0 +1,403 @@
+{% comment %}ly_global_begin{% endcomment %}{% include 'ly-global' %}{% comment %}ly_global_end{% endcomment %}
+{% comment %}
+  Important notes about pagination:
+  - Never access collection.products before the opening paginate tag.
+  - Never paginate by more than 50.
+{% endcomment %}
+
+{% assign products_per_page = settings.products_per_row | times: settings.number_of_rows %}
+{% assign numbers = 'zero, one, two, three, four, five, six' | split: ',' %}
+{% assign products_per_row = settings.products_per_row | times: 1 %}
+{% assign products_per_row = numbers[products_per_row] | strip | append: '-per-row' %}
+
+{% paginate collection.products by products_per_page %}
+
+{% comment %}
+  Re-use the .rte class wherever you output content that was added by a merchant using
+  the Rich Text Editor ( 'rte' stands for rich text editor ).
+  Style all HTML elements in that content the same way across the board.
+  Use the .rte class in your CSS to help maintain consistency.
+  Example: the h2 element should have the same size and color in:
+  - product descriptions
+  - collection descriptions
+  - page content
+  - blog post
+{% endcomment %}
+    
+    {% comment %}ly_asset_replace_for_[ 'jqueryui.js'  | asset_url | script_tag ]_begin{% endcomment %}{% assign ly_asset = 'jqueryui.js' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  | script_tag }}{% comment %}ly_asset_replace_end{% endcomment %}
+    
+
+
+  <script>
+  Shopify.queryParams = {};
+  if (location.search.length) {
+    for (var aKeyValue, i = 0, aCouples = location.search.substr(1).split('&'); i < aCouples.length; i++) {
+      aKeyValue = aCouples[i].split('=');
+      if (aKeyValue.length > 1) {
+        Shopify.queryParams[decodeURIComponent(aKeyValue[0])] = decodeURIComponent(aKeyValue[1]);
+      }
+    }
+  }
+  
+
+  $( function() {
+    $.widget( "custom.iconselectmenu", $.ui.selectmenu, {
+      change: function(event,ui){
+      },
+      _renderItem: function( ul, item ) {
+        var nameItem = item.label;
+        if ( item.label == 'Colour' || item.label == 'Top Style' ) {
+          nameItem = 'Show All';
+        }
+        if ( item.label == 'Color' ) {
+          nameItem = 'Mostrar todos';
+        }
+        if ( {{cart.attributes.language | json}} == 'ly27268' && item.label == 'Top Style' ) {
+          nameItem = 'Mostrar todos';
+        }
+
+        if ( {{cart.attributes.language | json}} != 'ly27268' && item.label == 'Azul' ) {
+          nameItem = 'Blue';
+        }
+        if ( {{cart.attributes.language | json}} != 'ly27268' && item.label == 'Amarillo' ) {
+          nameItem = 'Yellow';
+        }
+        if ( {{cart.attributes.language | json}} != 'ly27268' && item.label == 'Verde' ) {
+          nameItem = 'Green';
+        }
+        if ( {{cart.attributes.language | json}} != 'ly27268' && item.label == 'Naranja' ) {
+          nameItem = 'Orange';
+        }
+        if ( {{cart.attributes.language | json}} != 'ly27268' && item.label == 'Negro' ) {
+          nameItem = 'Black';
+        }
+        if ( {{cart.attributes.language | json}} != 'ly27268' && item.label == 'Rosa' ) {
+          nameItem = 'Pink';
+        }
+        if ( {{cart.attributes.language | json}} != 'ly27268' && item.label == 'Blanco' ) {
+          nameItem = 'White';
+        }
+        if ( {{cart.attributes.language | json}} != 'ly27268' && item.label == 'Lila' ) {
+          nameItem = 'Lilac';
+        }
+        if ( {{cart.attributes.language | json}} != 'ly27268' && item.label == 'Azul' ) {
+          nameItem = 'Blue';
+        }
+
+
+
+        var li = $( "<li class=" + item.element.attr( "data-class" ) + ">" ),
+          wrapper = $( "<div>", { text: nameItem } );
+ 
+        if ( item.disabled ) {
+          li.addClass( "ui-state-disabled" );
+        }
+ 
+        $( "<span>", {
+          style: item.element.attr( "data-style" ),
+          "class": "ui-icon " + item.element.attr( "data-class" )
+        })
+          .appendTo( wrapper );
+ 
+        return li.append( wrapper ).appendTo( ul );
+      }
+    });
+    
+ 
+    $( "#colour" )
+      .iconselectmenu({ change: function( event, ui ) { 
+        var collFilters = jQuery('.coll-filter');
+        delete Shopify.queryParams.page;
+        var newTags = [];
+        collFilters.each(function() {
+          if (jQuery(this).val()) {
+            newTags.push(jQuery(this).val());
+          }
+        });
+        {% if collection.handle %}
+        var newURL = '/collections/{{ collection.handle }}';
+        if (newTags.length) {
+          newURL += '/' + newTags.join('+');
+        }
+        var search = jQuery.param(Shopify.queryParams);
+        if (search.length) {
+          newURL += '?' + search;
+        }
+        location.href = newURL;
+        {% else %}
+        if (newTags.length) {
+          Shopify.queryParams.constraint = newTags.join('+');
+        }
+        else {
+          delete Shopify.queryParams.constraint;
+        }
+        location.search = jQuery.param(Shopify.queryParams);
+        {% endif %}
+
+
+      }})
+      .iconselectmenu( "menuWidget" )
+      .addClass( "ui-menu-icons customicons" );
+      
+ 
+    $( "#topStyle" )
+      .iconselectmenu({ change: function( event, ui ) { 
+        var collFilters = jQuery('.coll-filter');
+        delete Shopify.queryParams.page;
+        var newTags = [];
+        collFilters.each(function() {
+          if (jQuery(this).val()) {
+            newTags.push(jQuery(this).val());
+          }
+        });
+        {% if collection.handle %}
+        var newURL = '/collections/{{ collection.handle }}';
+        if (newTags.length) {
+          newURL += '/' + newTags.join('+');
+        }
+        var search = jQuery.param(Shopify.queryParams);
+        if (search.length) {
+          newURL += '?' + search;
+        }
+        location.href = newURL;
+        {% else %}
+        if (newTags.length) {
+          Shopify.queryParams.constraint = newTags.join('+');
+        }
+        else {
+          delete Shopify.queryParams.constraint;
+        }
+        location.search = jQuery.param(Shopify.queryParams);
+        {% endif %}
+
+
+      }})
+      .iconselectmenu( "menuWidget" )
+        .addClass( "ui-menu-icons customicons" );
+ 
+  } );
+  </script>
+  <style>
+    h2 {
+      margin: 30px 0 0 0;
+    }
+    fieldset {
+      border: 0;
+    }
+    label {
+      display: block;
+    }
+
+    ul#colour-menu {
+        -webkit-column-count: 2;
+        -moz-column-count: 2;
+        column-count: 2;
+        -webkit-column-gap: 90px;
+        -moz-column-gap: 90px;
+        column-gap: 90px;
+    }
+    @media (max-width: 470px) {
+      ul#colour-menu {
+          -webkit-column-count: 1;
+          -moz-column-count: 1;
+          column-count: 1;
+          -webkit-column-gap: 90px;
+          -moz-column-gap: 90px;
+          column-gap: 90px;
+      }
+    }
+
+ 
+    /* select with custom icons */
+    .ui-selectmenu-menu .ui-menu.customicons .ui-menu-item-wrapper {
+      padding: 0.5em 0 0.5em 3em;
+    }
+    .ui-selectmenu-menu .ui-menu.customicons .ui-menu-item .ui-icon {
+      height: 24px;
+      width: 24px;
+      top: 0.1em;
+    }
+
+    li.rosa.ui-menu-item:nth-child(6) .ui-menu-item-wrapper,
+    li.rosa.ui-menu-item:nth-child(7) .ui-menu-item-wrapper,
+    li.rosa.ui-menu-item:nth-child(8) .ui-menu-item-wrapper,
+    li.rosa.ui-menu-item:nth-child(9) .ui-menu-item-wrapper,
+    li.rosa.ui-menu-item:nth-child(10) .ui-menu-item-wrapper {
+        padding-right: 60px;
+    }
+
+
+    .colour.ui-menu-item .ui-menu-item-wrapper,
+    .top-style.ui-menu-item .ui-menu-item-wrapper {
+        display: none;
+    }
+
+
+    .ui-icon.top-style,
+    .undefined.ui-menu-item span {
+      background-image: none;
+    }
+    .ui-icon.triangle {
+      background: url("{% comment %}ly_asset_replace_for_[ 'triangle.svg' | asset_url ]_begin{% endcomment %}{% assign ly_asset = 'triangle.svg' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}") 0 0 no-repeat;
+    }
+    .ui-icon.bandeau {
+      background: url("{% comment %}ly_asset_replace_for_[ 'bandeau.svg' | asset_url ]_begin{% endcomment %}{% assign ly_asset = 'bandeau.svg' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}") 0 0 no-repeat;
+    }
+    .ui-icon.balconet {
+      background: url("{% comment %}ly_asset_replace_for_[ 'balconet.svg' | asset_url ]_begin{% endcomment %}{% assign ly_asset = 'balconet.svg' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}") 0 0 no-repeat;
+    }
+    .ui-icon.push-up {
+      background: url("{% comment %}ly_asset_replace_for_[ 'push-up.png' | asset_url ]_begin{% endcomment %}{% assign ly_asset = 'push-up.png' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}") 0 0 no-repeat;
+    }
+    .ui-icon.one-piece {
+      background: url("{% comment %}ly_asset_replace_for_[ 'one-piece.svg' | asset_url ]_begin{% endcomment %}{% assign ly_asset = 'one-piece.svg' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}") 0 0 no-repeat;
+    }
+
+    #colour-menu .ui-icon {
+        border-radius: 50%;
+        background-image: none;
+    }
+
+
+    .ui-icon.azul {
+        background-color: #0039FF;
+    }
+    .ui-icon.amarillo {
+        background-color: #FFFC00;
+    }
+    .ui-icon.verde {
+        background-color: #1ed000;
+    }
+    .ui-icon.naranja {
+        background-color: #FF5A00;
+    }
+    .ui-icon.rosa {
+        background-color: #ff2eb3;
+    }
+    .ui-icon.negro {
+        background-color: #000;
+    }
+    .ui-icon.blanco {
+        background-color: #FFF;
+    }
+    .ui-icon.chocolate {
+        background-color: #3C0000;
+    }
+    .ui-icon.lila {
+        background-color: #C8A2C8;
+    }
+
+ 
+    /* select with CSS avatar icons */
+    option.avatar {
+      background-repeat: no-repeat !important;
+      padding-left: 20px;
+    }
+    .avatar .ui-icon {
+      background-position: left top;
+    }
+    li.undefined.ui-menu-item {
+        width: 153px;
+    }
+    .ui-selectmenu-menu.ui-front .ui-menu-item-wrapper .ui-icon {
+      transition: .2s ease-in-out;
+    }
+    .ui-selectmenu-menu.ui-front .ui-menu-item-wrapper:hover {
+        font-family: 'AzoSans-Regular';
+    }
+
+    .ui-selectmenu-menu.ui-front .ui-menu-item-wrapper:hover .ui-icon {
+        height: 26px;
+        width: 26px;
+    }
+    #topStyle-menu .ui-menu-item-wrapper:hover .ui-icon {
+      transform: scale(1.1);
+    }
+  </style>
+
+
+
+
+
+
+<div class="campos">
+ 
+  <fieldset>
+    {% assign tags = 'Azul, Amarillo, Verde, Naranja, Rosa, Chocolate, Lila, Blanco, Negro' | split: ',' %}
+    <select name="filesA" id="colour" class='coll-filter' width="379">
+      <option value="" class='colourOption'><ly-as-4182766>Colour</ly-as-4182766></option>
+      {% for t in tags %}
+        {% assign tag = t | strip %}
+        {% if current_tags contains tag %}
+          <option value="{{ tag | handle }}" data-class="{{ tag | handle }}" selected>{{ tag }}</option>
+        {% elsif collection.all_tags contains tag %}
+          <option value="{{ tag | handle }}" data-class="{{ tag | handle }}">{{ tag }}</option>
+        {% endif %}
+      {% endfor %}
+    </select>
+  </fieldset>
+
+  <fieldset>
+    {% assign tags = 'Triangle, Bandeau, Balconet, Push up, One Piece' | split: ',' %}
+    <select name="filesB" id="topStyle" class='coll-filter'>
+      <option value="" class='topStyleOption'><ly-as-4182767>Top Style</ly-as-4182767></option>
+      {% for t in tags %}
+        {% assign tag = t | strip %}
+        {% if current_tags contains tag %}
+          <option value="{{ tag | handle }}" data-class="{{ tag | handle }}" selected>{{ tag }}</option>
+        {% elsif collection.all_tags contains tag %}
+          <option value="{{ tag | handle }}" data-class="{{ tag | handle }}">{{ tag }}</option>
+        {% endif %}
+      {% endfor %}
+    </select>
+  </fieldset>
+
+ 
+</div>
+
+
+
+{% if collection.description.size > 0 %}
+<div class="rte clearfix">
+  {% comment %}ly_code_replace_for_[ collection.description ]_begin{% endcomment %}{% include 'ly-description' with collection %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}
+</div>
+{% endif %}
+
+<ul class="grid clearfix">
+{% for product in collection.products %}
+  {% if product.type == 'Biquini' %}
+    {% include 'product-grid-item' with products_per_row %}
+  {% endif %}
+{% else %}
+  <p><ly-as-4182768>There are no products in this view.</ly-as-4182768></p>
+{% endfor %}
+</ul>
+
+{% if paginate.pages > 1 %}
+<div class="pagination centered">
+  {{ paginate | default_pagination }}
+</div>
+{% endif %}
+
+<div style='clear:both;'></div>
+{% section 'shopInstagram' %}
+
+
+
+
+{% endpaginate %}
+
+{% comment %}
+
+JavaScript for collection sorting.
+
+<script>
+jQuery('.sort-by')
+  .val('{{ collection.sort_by | default: collection.default_sort_by }}')
+  .on('change', function() {
+    Shopify.queryParams.sort_by = jQuery(this).val();
+    location.search = jQuery.param(Shopify.queryParams).replace(/\+/g, '%20');
+  });
+</script>
+
+{% endcomment %}

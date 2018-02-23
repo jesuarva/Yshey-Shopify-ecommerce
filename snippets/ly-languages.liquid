@@ -1,0 +1,76 @@
+<script>var ShopifyAPI = ShopifyAPI || {};var langify = langify || {};langify.tools = langify.tools || {compareJQueryVersion: function(a,b) {if (a === b) {return 0;}var a_components = a.split(".");var b_components = b.split(".");var len = Math.min(a_components.length, b_components.length);for (var i = 0; i < len; i++) {if (parseInt(a_components[i]) > parseInt(b_components[i])) {return 1;}if (parseInt(a_components[i]) < parseInt(b_components[i])) {return -1;}}if (a_components.length > b_components.length) {return 1;}if (a_components.length < b_components.length) {return -1;}return 0;}};langify.helper = langify.helper || {getCookieEnabled: function() {var cookieEnabled = navigator.cookieEnabled ? true : false;if(typeof navigator.cookieEnabled == "undefined" && !cookieEnabled) {document.cookie = "testcookie";cookieEnabled = document.cookie.indexOf("testcookie") != -1 ? true : false;}return cookieEnabled;},getSelectedLanguage: function() {var selectedLanguage = '{{ cart.attributes["language"] }}';if(selectedLanguage == '') {selectedLanguage = '{{ shop.metafields["languages"]["default"] }}';}return selectedLanguage;},saveLanguage: function(language) {ShopifyAPI.getCart(function (cart) {var note = cart.note;if(note == 'null') {note = '';}ShopifyAPI.updateCartNote(note, function () {ShopifyAPI.updateCartAttributes({'language': language}, function() {langify.loader.reload();});});});}};langify.loader = langify.loader || {loadScript: function(url, callback) {var script = document.createElement('script');script.type = 'text/javascript';if(script.readyState) {script.onreadystatechange = function () {if(script.readyState == 'loaded' || script.readyState == 'complete') {script.onreadystatechange = null;callback();}};} else {script.onload = function () {callback();};}script.src = url;document.getElementsByTagName('head')[0].appendChild(script);},reload: function() {window.location.reload();}};langify.switcher = langify.switcher || {getHasSelectedLanguage: function() {return '{{ cart.attributes["custom_language"] }}' == 'true';},getSlickSwitcher: function() {var switcher = langify.jquery('select[id="ly-slick-languages-switcher"]');if(switcher.length > 0) {return switcher;}return undefined;},getSwitcher: function() {var switcher = $('select[id="ly-languages-switcher"]');if (switcher.length > 0) {return switcher;}return undefined;},init: function() { {% assign language = cart.attributes["language"] %}  {% if language == nil %} if(langify.helper.getCookieEnabled()) {if(!langify.switcher.getHasSelectedLanguage()) {ShopifyAPI.getCart(function (cart) {var userLanguage = window.navigator.userLanguage || window.navigator.language;if(userLanguage) {userLanguage = userLanguage.substring(0, 2);var note = cart.note;if(note == 'null') {note = '';}ShopifyAPI.updateCartNote(note, function () {ShopifyAPI.updateCartAttributes({'custom_language': 'true'}, function() {var userLanguage = window.navigator.userLanguage || window.navigator.language;if(userLanguage) {userLanguage = userLanguage.substring(0, 2);var languageCodes = [];{% for languageCode in shop.metafields.language_codes %}languageCodes['{{ languageCode | last }}'] = '{{ languageCode | first }}';{% endfor %}var languages = [];var languageIds = [];{% for language in shop.metafields.languages %}languages['{{ language | first }}'] = '{{ language | last }}';{% endfor %}if(languageCodes[userLanguage] && languages[languageCodes[userLanguage]]) {langify.helper.saveLanguage(languageCodes[userLanguage]);}}});});}});}} {% endif %} var slickSwitcher = langify.switcher.getSlickSwitcher();if(slickSwitcher) {var selectedLanguage = langify.helper.getSelectedLanguage();if(selectedLanguage != '') {slickSwitcher.val(selectedLanguage);}langify.loader.loadScript('{{ "ly-select-box.js" | asset_url }}', function () {slickSwitcher.ddslick({onSelected: function (data) {langify.helper.saveLanguage(data.selectedData.value);}});});}var switcher = langify.switcher.getSwitcher();if(switcher) {var selectedLanguage = langify.helper.getSelectedLanguage();if(selectedLanguage != '') {switcher.val(selectedLanguage);}switcher.change(function () {langify.helper.saveLanguage(switcher.val());});}$('.ly-languages-switcher-link').click(function () {langify.helper.saveLanguage(this.id);});}};langify.translator = langify.translator || {init:function() { {% if shop.metafields.langify.use_mutation_observer == 'true' %}{% assign current_language = cart.attributes["language"] %}{% if current_language == nil %}{% assign current_language = shop.metafields["languages"]["default"] %}{% endif %}
+var customContents = [];
+var customTranslations = [];
+{% for custom in shop.metafields.custom %}
+{% assign src = custom | last %}
+{% assign key = custom | first %}
+{% assign key = key | split: "ly" | last %}
+{% assign translation_namespace =  current_language | append: "cu" %}
+{% assign translation_key = "id" | append: key %}
+{% if shop.metafields[translation_namespace][translation_key] %}
+{% assign translation = shop.metafields[translation_namespace][translation_key] %}
+customContents['{{ src | replace: "\", "\\\" | replace: "'", "\\'" }} '.trim().toUpperCase()] = '{{ translation | replace: "\", "\\\" |  replace: "'", "\\'" }}';
+{% endif %}
+{% endfor %}
+{% if product %}
+{% for variant in product.variants %}
+{% include 'ly-option1' with variant %}
+{% if ly_translation %}
+{% assign used_source = variant.option1 | replace: "\", "\\\" | replace: "'", "\\'" | replace: "  ", " " %}
+{% assign used_translation = ly_translation | replace: "\", "\\\" |  replace: "'", "\\'" %}
+if(!customContents['{{ used_source }}'.toUpperCase()]) {
+customContents['{{ used_source }}'.toUpperCase()] = '{{ used_translation }}';
+}
+{% endif %}
+{% include 'ly-option2' with variant %}
+{% if ly_translation %}
+{% assign used_source = variant.option2 | replace: "\", "\\\" | replace: "'", "\\'" | replace: "  ", " " %}
+{% assign used_translation = ly_translation | replace: "\", "\\\" |  replace: "'", "\\'" %}
+if(!customContents['{{ used_source }}'.toUpperCase()]) {
+customContents['{{ used_source }}'.toUpperCase()] = '{{ used_translation }}';
+}
+{% endif %}
+{% include 'ly-option3' with variant %}
+{% if ly_translation %}
+{% assign used_source = variant.option3 | replace: "\", "\\\" | replace: "'", "\\'" | replace: "  ", " " %}
+{% assign used_translation = ly_translation | replace: "\", "\\\" |  replace: "'", "\\'" %}
+if(!customContents['{{ used_source }}'.toUpperCase()]) {
+customContents['{{ used_source }}'.toUpperCase()] = '{{ used_translation }}';
+}
+{% endif %}
+{% endfor %}
+{% endif %}
+var translateTextNode = function(node) {
+if(node.textContent && node.textContent.trim().length > 0) {
+var src = node.textContent.trim().replace(/(\r\n|\n|\r)/gm,"").replace(/\s+/g," ").toUpperCase();
+if(customContents[src] && node.textContent !== customContents[src]) {
+node.textContent = node.textContent.replace(node.textContent.trim(), customContents[src]);
+}
+}
+}
+try {var textNodes = $('body').find('*').addBack().not('script').not('style').contents().filter(function() {
+if(this.nodeType === 3) {
+translateTextNode(this);
+}
+});
+} catch(e) {};var target = document.querySelector('body');
+var observer = new MutationObserver(function(mutations) {
+mutations.forEach(function(mutation) {
+var newNodes = mutation.addedNodes;
+if(newNodes) {
+for(i = 0; i < newNodes.length; i++) {
+try {var textNodes = $(newNodes[i]).find('*').addBack().not('script').not('style').contents().filter(function() {
+if(this.nodeType === 3) {
+translateTextNode(this);
+}
+});
+} catch(e) {};}
+}
+if(mutation.type === 'characterData') {
+translateTextNode(mutation.target);
+}
+});
+});
+var config = { childList: true, characterData: true, subtree: true }
+observer.observe(target, config);
+{% endif %}}};langify.currency = langify.currency || {getHasSelectedCurrency: function() {return '{{ cart.attributes["custom_currency"] }}' == 'true';},getCurrencyForLanguage: function(language) {var languageToCurrencies = [];{% for mf in shop.metafields.lang_to_currency %}{% assign split = mf | first | split: '#' %}{% assign themeId = split | first %}{% assign compareThemeId = 'ly' | append: theme.id %}{% if themeId == compareThemeId %}{% assign languageValue = split | last %}languageToCurrencies['{{ languageValue }}'] = '{{ mf | last }}';{% endif %}{% endfor %}return languageToCurrencies[language];},getCurrencySwitcher: function() {var currencySwitcher = $('#currencies');if(currencySwitcher.length) {return currencySwitcher;} else {return null;}},init: function() {if(!langify.currency.getHasSelectedCurrency()) { {% assign switcher_setting_key = 'ly' | append: theme.id %}{% if shop.metafields.ly_c_switcher[switcher_setting_key] == 'enabled' %}var currencySwitcher = langify.currency.getCurrencySwitcher();if(typeof Currency != 'undefined' && currencySwitcher) {currencySwitcher.change(function() {ShopifyAPI.getCart(function (cart) {var note = cart.note;if(note == 'null') {note = '';}ShopifyAPI.updateCartNote(note, function () {ShopifyAPI.updateCartAttributes({'custom_currency': 'true'},function() {});});});});var selectedLanguage = langify.helper.getSelectedLanguage();var currencyForLanguage = langify.currency.getCurrencyForLanguage(selectedLanguage);if(currencyForLanguage) {var currentCurrency = Currency.cookie.read();Currency.currentCurrency = currencyForLanguage;Currency.cookie.write(currencyForLanguage);Currency.convertAll(currentCurrency, currencyForLanguage);currencySwitcher.val(currencyForLanguage);var selectedCurrencySpan = $('span.selected-currency');if(selectedCurrencySpan.length) {selectedCurrencySpan.text(currencyForLanguage);}}}{% endif %} }}};langify.core = langify.core || {onComplete: function() {ShopifyAPI.attributeToString = function(attribute) {if((typeof attribute) !== 'string') {attribute += '';if(attribute === 'undefined') {attribute = '';}}return jQuery.trim(attribute);};ShopifyAPI.getCart = function(callback) {jQuery.getJSON('/cart.js', function (cart, textStatus) {if((typeof callback) === 'function') {callback(cart);}});};ShopifyAPI.updateCartNote = function(note, callback) {var params = {type: 'POST',url: '/cart/update.js',data: 'note=' + this.attributeToString(note),dataType: 'json',success: function(cart) {if((typeof callback) === 'function') {callback(cart);}},error: this.onError};jQuery.ajax(params);};ShopifyAPI.updateCartAttributes = function(attributes, callback) {var data = '';var that = this;if(jQuery.isArray(attributes)) {jQuery.each(attributes, function(indexInArray, valueOfElement) {var key = that.attributeToString(valueOfElement.key);if (key !== '') {data += 'attributes[' + key + ']=' + that.attributeToString(valueOfElement.value) + '&';}});} else if ((typeof attributes === 'object') && attributes !== null) {jQuery.each(attributes, function(key, value) {data += 'attributes[' + that.attributeToString(key) + ']=' + that.attributeToString(value) + '&';});}var params = {type: 'POST',url: '/cart/update.js',data: data,dataType: 'json',success: function(cart) {if((typeof callback) === 'function') {callback(cart);}},error: this.onError};jQuery.ajax(params);};ShopifyAPI.onError = function(XMLHttpRequest, textStatus) {};langify.switcher.init();langify.translator.init();langify.currency.init();},init: function() {if(typeof jQuery === 'undefined') {langify.loader.loadScript('//cdn.jsdelivr.net/jquery/1.9.1/jquery.min.js', function() {langify.jquery = $;langify.core.onComplete();});} else if(langify.tools.compareJQueryVersion(jQuery.fn.jquery, '1.7.0') <= 0) {langify.loader.loadScript('//cdn.jsdelivr.net/jquery/1.9.1/jquery.min.js', function() {langify.jquery = jQuery.noConflict(true);langify.core.onComplete();});} else {langify.jquery = $;langify.core.onComplete();}}};langify.core.init();</script>

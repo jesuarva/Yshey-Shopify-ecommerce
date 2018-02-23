@@ -1,0 +1,159 @@
+{% comment %}ly_global_begin{% endcomment %}{% include 'ly-global' %}{% comment %}ly_global_end{% endcomment %}
+{% comment %}
+The search.liquid template is not a required template.
+That search.liquid template is included in the current theme to make it easier for you 
+to customize your /search page.
+Whether you are using your own template for the search page or not,
+the {{ content_for_header }} tag in theme.liquid will always output the following on the /search page:
+<link rel="stylesheet" href="//cdn.shopify.com/s/global/search.css" type="text/css" />
+So the /search page is always styled by a globally-hosted stylesheet called search.css.
+You may override and complement that CSS in your theme's stylesheet.
+We are using a div#searchresults below so that the styles defined in search.css get
+applied to the elements on this page; the 'searchresults' id is used in the CSS
+selectors inside search.css.
+{% endcomment %}
+
+{% assign products_per_page = settings.products_per_row | times: settings.number_of_rows %}
+{% assign numbers = 'zero, one, two, three, four, five, six' | split: ',' %}
+{% assign products_per_row = settings.products_per_row | times: 1 %}
+{% assign products_per_row = numbers[products_per_row] | strip | append: '-per-row' %}
+
+
+<div id="searchresults">
+  
+  {% comment %}
+  <div class="centered">
+    <form action="/search" method="get" class="search-form" role="search">
+      <input name="q" type="search" id="search-field" placeholder="Search store..." value="{{ search.terms | escape }}" />
+      <input type="submit" id="search-submit" value="Search" />
+    </form>
+  </div>
+  {% endcomment %}
+  
+  {% comment %}
+  search.performed is false when accessing the /search page without a 'q' parameter set
+  in the URL. A shop-owner can link to the /search page from one of his link lists.
+  It is important to show a search form on that page if search.performed is false.
+  {% endcomment %}
+  
+  {% if search.performed %}
+    
+    {% paginate search.results by 48 %}
+    
+    {% comment %}
+    Common pitfall to avoid: search.results should never be accessed before the opening 
+    paginate tag. Move the opening and closing paginate tags to the very top and bottom of your
+    search.liquid template if you need to.
+    If you fail to do the above, the pagination of search results will be broken.
+    search.results_count is fine to access in or out of the paginate block.
+    {% endcomment %}
+   
+    {% if search.results_count == 0 %}
+    <div class='grid clearfix'>
+      <p class="centered nada"><ly-as-4182896>Your search for "</ly-as-4182896>{{ search.terms }}<ly-as-4182897>" did not yield any results.</ly-as-4182897></p>
+    </div>              
+    {% else %}
+
+      <ul class="grid clearfix collection-matrix">
+
+        {% for item in search.results %}
+          {% comment %}Is this product on sale?{% endcomment %}
+          {% assign on_sale = false %}
+          {% if item.compare_at_price > item.price %}
+            {% assign on_sale = true %}
+          {% endif %}
+
+          <li class="three-per-row centered">
+
+            <div class="prod-image-wrap">  
+              <a href="{{ item.url | within: collection }}">
+                <img src="{{ item | img_url: 'grande' }}" alt="{{ item.featured_image.alt | escape }}" />
+              </a>
+            </div><!-- .prod-image-wrap -->
+            
+            <div class="prod-caption">
+                <a href="{{ item.url | within: collection }}">
+                  {% comment %}ly_code_replace_for_[ item.title ]_begin{% endcomment %}{% include 'ly-title' with item %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}
+                </a>
+                <span class="prod-price">
+                  {% if item.price_varies %}<ly-as-4182898>From</ly-as-4182898>{% endif %}
+                  {{ item.price | money }}
+                  {% if on_sale %}
+                  <s class="compare-at-price">{{ item.compare_at_price | money }}</s>
+                  {% endif %}
+                </span>
+                {% comment %}
+                  All themes by Shopify should support the Product Reviews app out of the box.
+                  https://apps.shopify.com/product-reviews
+                {% endcomment %}
+                <span class="shopify-product-reviews-badge" data-id="{{ item.id }}"></span>
+            </div><!-- .prod-caption -->
+            
+          </li>
+          {% if products_per_row == 'six-per-row' %}
+          {% cycle 'clear': '', '', '', '', '', '<div style="clear:both"></div>' %}
+          {% elsif products_per_row == 'five-per-row' %}
+          {% cycle 'clear': '', '', '', '', '<div style="clear:both"></div>' %}
+          {% elsif products_per_row == 'four-per-row' %}
+          {% cycle 'clear': '', '', '', '<div style="clear:both"></div>' %}
+          {% elsif products_per_row == 'three-per-row' %}
+          {% cycle 'clear': '', '', '<div style="clear:both"></div>' %}
+          {% elsif products_per_row == 'two-per-row' %}
+          {% cycle 'clear': '', '<div style="clear:both"></div>' %}
+          {% endif %}
+        {% endfor %}
+      </ul>
+    <!--
+    <ol>
+      {% for item in search.results %}  
+{% if item.vendor == 'Swagify' %}
+  {% continue %}
+{% endif %}
+      <li class="clearfix">
+        <h3>{% comment %}ly_code_replace_for_[ item.title | link_to: item.url ]_begin{% endcomment %}{% include 'ly-title' with item %}{{ ly_translation | link_to: item.url }}{% comment %}ly_code_replace_end{% endcomment %}</h3>
+        {% if item.vendor %}
+        <div class="result-image">
+          <a href="{{ item.url }}" title="{% comment %}ly_code_replace_for_[ item.title | escape ]_begin{% endcomment %}{% include 'ly-title' with item %}{{ ly_translation | escape }}{% comment %}ly_code_replace_end{% endcomment %}">
+            {{ item | img_url: 'small' | img_tag: item.featured_image.alt }}
+          </a>
+        </div>
+        {% endif %}
+        <span>{% comment %}ly_code_replace_for_[ item.content | strip_html | truncatewords: 40 | highlight: search.terms ]_begin{% endcomment %}{% include 'ly-content' with item %}{{ ly_translation | strip_html | truncatewords: 40 | highlight: search.terms }}{% comment %}ly_code_replace_end{% endcomment %}</span>        
+      </li>
+      {% endfor %}
+    </ol>
+    -->
+    {% endif %}    
+    
+    {% if paginate.next %}
+      <li class="more">
+        <a href="{{ paginate.next.url }}"><ly-as-4365805>Cargar Más</ly-as-4365805></a>
+        <div class='raya'></div>
+      </li>        
+    {% endif %}
+    <div id="product-list-foot"></div>
+    {% endpaginate %}    
+    
+  {% endif %}  
+
+  <div style='clear:both;'></div>
+  
+
+</div>
+<!-- Facebook Pixel Code -->
+<script>
+// Search Event 
+ var product_ids = [];
+    {% for item in search.results %}
+        {% if item.object_type == 'product' %}
+          product_ids.push('{{ item.id }}');
+        {% endif %}
+   {% endfor %}
+
+    fbq('track', 'Search', {
+        search_string: '{{search.terms}}',
+        content_ids: product_ids,
+  });
+// END Search Event   
+</script>
+<!-- End Facebook Pixel Code -->

@@ -1,0 +1,95 @@
+{% comment %}ly_global_begin{% endcomment %}{% include 'ly-global' %}{% comment %}ly_global_end{% endcomment %}
+{% layout settings.customer_layout %}
+
+<div id="template">
+  <div id="customer">
+    <div class="template_header">
+      <h2 class="title"><ly-as-4464702>Log in</ly-as-4464702></h2>
+    </div>
+
+    {% form 'customer_login' %}
+      {{ form.errors | default_errors | replace: '<ly-as-4891497>Invalid login credentials.</ly-as-4891497>', '<ly-as-4891497>Invalid login credentials.</ly-as-4891497>' }}
+
+      <div id="login_email" class="clearfix large_form">
+        <input type="email" value="" name="customer[email]" id="customer_email" class="large" size="30" placeholder="<ly-as-4182810>Email adress</ly-as-4182810>"/>
+      </div>
+
+      {% if form.password_needed %}
+
+        {% comment %}
+          Customer Account Login
+        {% endcomment %}
+
+        <div id="login_password" class="clearfix large_form">
+          <input type="password" value="" name="customer[password]" id="customer_password" class="large password" size="16" placeholder="<ly-as-4182811>Password</ly-as-4182811>"/>
+          <div id="forgot_password">
+            <a href="#" onclick="showRecoverPasswordForm();return false;"><ly-as-4182800>Forgot your password?</ly-as-4182800></a>
+          </div>
+        </div>
+
+      {% endif %}
+
+      <div class="action_bottom">
+        <input class="btn" type="submit" value="<ly-as-4182807>Sign In</ly-as-4182807>" />
+        <span class="note"><ly-as-4182801>or</ly-as-4182801> <a href="{{ shop.url }}"><ly-as-4182802>Return to Store</ly-as-4182802></a></span>
+      </div>
+      <input type="hidden" name="customer[tags]" value="ly#{% assign language = cart.attributes["language"] %}{% if language == nil %}{% assign language = shop.metafields["languages"]["default"] %}{% endif %}{{ language }}ly#"/>
+    {% endform %}
+  </div>
+
+  {% comment %}
+    Recover Password Form
+  {% endcomment %}
+
+  <div id="recover-password" style='display:none'>
+    <div class="template_header">
+      <h2 class="title"><ly-as-4182803>Reset Password</ly-as-4182803></h2>
+      <p class="note"><ly-as-4182804>We will send you an email to reset your password.</ly-as-4182804></p>
+    </div>
+
+    {% form 'recover_customer_password' %}
+      {{ form.errors | default_errors }}
+
+      <div id="recover_email" class="clearfix large_form">
+        <input type="email" placeholder="<ly-as-4182812>Email</ly-as-4182812>" value="" size="30" name="email" id="recover-email" class="large" />
+      </div>
+      <div class="action_bottom">
+        <input class="btn" type="submit" value="<ly-as-4182808>Submit</ly-as-4182808>" />
+        <span class="note"><ly-as-4182801>or</ly-as-4182801> <a href="#" onclick="hideRecoverPasswordForm();return false;"><ly-as-4182805>Cancel</ly-as-4182805></a></span>
+      </div>
+      <input type="hidden" name="customer[tags]" value="ly#{% assign language = cart.attributes["language"] %}{% if language == nil %}{% assign language = shop.metafields["languages"]["default"] %}{% endif %}{{ language }}ly#"/>
+    {% endform %}
+  </div>
+
+
+  {% comment %}
+    Guest Login form for shops with optional customer accounts. This form is displayed only when users click on the checkout link
+    on the cart page.
+  {% endcomment %}
+
+  {% if shop.checkout.guest_login %}
+  <div id="guest">
+    <div class="template_header">
+      <h3 class="title"><ly-as-4182806>Guest Login</ly-as-4182806></h3>
+    </div>
+    {% form 'guest_login' %}
+      <input class="btn" type="submit" value="<ly-as-4182809>Continue as Guest</ly-as-4182809>" />
+    {% endform %}
+  </div>
+  {% endif %}
+</div>
+
+
+<script type="text/javascript">
+  function showRecoverPasswordForm() {
+    document.getElementById('recover-password').style.display = 'inline-block';
+    document.getElementById('customer').style.display='none';
+  }
+
+  function hideRecoverPasswordForm() {
+    document.getElementById('recover-password').style.display = 'none';
+    document.getElementById('customer').style.display = 'inline-block';
+  }
+
+  if (window.location.hash == '#recover') { showRecoverPasswordForm() }
+</script>

@@ -1,0 +1,111 @@
+{% comment %}ly_global_begin{% endcomment %}{% include 'ly-global' %}{% comment %}ly_global_end{% endcomment %}
+{% layout settings.customer_layout %}
+
+<div id="admin_header">
+  <div class="action_link action_return note" id='return_to_store'><a href="/account"><ly-as-4182813>Return to Account page</ly-as-4182813></a></div>
+
+  <h2 class="title"><ly-as-4182814>Order</ly-as-4182814> {{ order.name }}</h2>
+</div>
+
+{% if order.cancelled %}
+<div id="order_cancelled" class="flash notice">
+  <h5 id="order_cancelled_title"><ly-as-4182815>Order Cancelled</ly-as-4182815> <span class="note"><ly-as-4182816>on</ly-as-4182816> {{ order.cancelled_at | date: "%B %d, %Y %I:%M%p" }}</span></h5>
+  <span class="note">{{ order.cancel_reason }}</span>
+</div>
+{% endif %}
+
+<div class="note order_date"><ly-as-4182817>Placed on</ly-as-4182817> {{ order.created_at | date: "%B %d, %Y %I:%M%p" }}</div>
+
+<div id="order_address" class="group">
+  <div id="order_payment">
+    <h5 class="order_section_title"><ly-as-4182818>Billing Address</ly-as-4182818></h5>
+    <p><span class="note"><ly-as-4182819>Payment Status:</ly-as-4182819></span> <span class="status_{{ order.financial_status }}">{{ order.financial_status }}</span></p>
+    <div class="address note">
+      <p>{{ order.billing_address.name }}</p>
+      <p>{{ order.billing_address.company }}</p>
+      <p>{{ order.billing_address.street }}</p>
+      <p>{{ order.billing_address.city }}, {{ order.billing_address.province }}</p>
+      <p>{{ order.billing_address.country }} {{ order.billing_address.zip }}</p>
+      <p>{{ order.billing_address.phone }}</p>
+    </div>
+  </div>
+  {% if order.shipping_address %}
+    <div id="order_shipping">
+      <h5 class="order_section_title"><ly-as-4182820>Shipping Address</ly-as-4182820></h5>
+      <p><span class="note"><ly-as-4182821>Fulfillment Status:</ly-as-4182821></span> <span class="status_{{ order.fulfillment_status }}">{{ order.fulfillment_status }}</span></p>
+      <div class="address note">
+        <p>{{ order.shipping_address.name }}</p>
+        <p>{{ order.shipping_address.company }}</p>
+        <p>{{ order.shipping_address.street }}</p>
+        <p>{{ order.shipping_address.city }}, {{ order.shipping_address.province }}</p>
+        <p>{{ order.shipping_address.country }} {{ order.shipping_address.zip }}</p>
+        <p>{{ order.shipping_address.phone }}</p>
+      </div>
+    </div>
+  {% endif %}
+</div>
+
+<table id="order_details">
+  <thead>
+    <tr>
+      <th><ly-as-4182822>Product</ly-as-4182822></th>
+      <th><ly-as-4182823>SKU</ly-as-4182823></th>
+      <th><ly-as-4182824>Price</ly-as-4182824></th>
+      <th class="center"><ly-as-4182825>Quantity</ly-as-4182825></th>
+      <th class="total"><ly-as-4182826>Total</ly-as-4182826></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for line_item in order.line_items %}
+    <tr id="{{ line_item.id }}" class="{% cycle 'odd', 'even' %}">
+      <td class="product">
+        {% comment %}ly_code_replace_for_[ line_item.title | link_to: line_item.product.url ]_begin{% endcomment %}{% include 'ly-title' with line_item %}{{ ly_translation | link_to: line_item.product.url }}{% comment %}ly_code_replace_end{% endcomment %} 
+        {% if line_item.fulfillment %}
+          <div class="note">
+            <ly-as-4182827>Fulfilled</ly-as-4182827> {{ line_item.fulfillment.created_at | date: "%b %d" }}
+            {% if line_item.fulfillment.tracking_number %}
+              <a href="{{ line_item.fulfillment.tracking_url }}">{{ line_item.fulfillment.tracking_company }} #{{ line_item.fulfillment.tracking_number}}</a>
+            {% endif %}
+          </div>
+        {% endif %}
+      </td>
+      <td class="sku note">{{ line_item.sku }}</td>
+      <td class="money">{{ line_item.price | money | remove: ".00" }}</td>
+      <td class="quantity cente">{{ line_item.quantity }}</td>
+      <td class="total money">{{ line_item.quantity | times: line_item.price | money | remove: ".00" }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+  <tfoot>
+    <tr class="order_summary note">
+      <td class="label" colspan="4"><ly-as-4182828>Subtotal:</ly-as-4182828></td>
+      <td class="total money">{{ order.subtotal_price | money | remove: ".00" }}</td>
+    </tr>
+
+    {% for discount in order.discounts %}
+      <tr class="order_summary discount">
+        <td class="label" colspan="4">{{ discount.code }} <ly-as-4182829>Discount:</ly-as-4182829></td>
+        <td class="total money">{{ discount.savings | money | remove: ".00" }}</td>
+      </tr>
+    {% endfor %}
+
+    {% for shipping_method in order.shipping_methods %}
+    <tr class="order_summary note">
+      <td class="label" colspan="4"><ly-as-4182830>Shipping (</ly-as-4182830>{% comment %}ly_code_replace_for_[ shipping_method.title ]_begin{% endcomment %}{% include 'ly-title' with shipping_method %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}):</td>
+      <td class="total money">{{ shipping_method.price | money | remove: ".00" }}</td>
+    </tr>
+    {% endfor %}
+
+    {% for tax_line in order.tax_lines %}
+      <tr class="order_summary note">
+        <td class="label" colspan="4"><ly-as-4182831>Tax (</ly-as-4182831>{% comment %}ly_code_replace_for_[ tax_line.title ]_begin{% endcomment %}{% include 'ly-title' with tax_line %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %} {{ tax_line.rate | times: 100 }}%):</td>
+        <td class="total money">{{ tax_line.price | money | remove: ".00" }}</td>
+      </tr>
+    {% endfor %}
+
+    <tr class="order_summary order_total">
+      <td class="label" colspan="4"><ly-as-4182832>Total:</ly-as-4182832></td>
+      <td class="total money">{{ order.total_price | money | remove: ".00" }}</td>
+    </tr>
+  </tfoot>
+</table>

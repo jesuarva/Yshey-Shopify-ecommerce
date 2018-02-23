@@ -1,0 +1,98 @@
+{% comment %}ly_global_begin{% endcomment %}{% include 'ly-global' %}{% comment %}ly_global_end{% endcomment %}
+{% comment %}
+Re-use the 'rte' class wherever you output content that was added by a merchant using
+the Rich Text Editor ( 'rte' stands for rich text editor ).
+Style all HTML elements in that content the same way across the board.
+Use the 'rte' class in your CSS to help maintain that consistency.
+Example: the h2 element should have the same size and color in:
+- product descriptions
+- collection descriptions
+- 'page' pages' content
+- blog post
+{% endcomment %}
+<div class='pageContForm'>
+   
+{% form 'contact' %}
+
+  {% if form.posted_successfully? %}
+    <div class="successForm feedback">
+      <ly-as-4182859>Thank you!</ly-as-4182859>
+    </div>
+  {% endif %}
+
+  {% if form.errors %}
+  <div class="errorForm feedback">
+    <!-- {{ form.errors.size }} or {{ form.errors | size }} -->
+    <p><ly-as-4182860>Your contact form has</ly-as-4182860> {{ form.errors | size | pluralize: "<ly-as-4182861>an error</ly-as-4182861>", "<ly-as-4182862>a few errors</ly-as-4182862>" }}<ly-as-4182863>. To submit your form, make the following changes and try again:</ly-as-4182863></p>
+    {% for field in form.errors %}
+      <p><ly-as-4182864>The</ly-as-4182864> {{ field | capitalize | replace: '<ly-as-4182865>Body</ly-as-4182865>', '<ly-as-4182866>Message</ly-as-4182866>' }} <ly-as-4182867>field</ly-as-4182867> {{ form.errors.messages[field] }}.</p>
+    {% endfor %}
+  </div>
+  {% endif %} 
+
+  <div id="contactFormWrapper">
+    <h2><ly-as-4182868>CONTACT</ly-as-4182868></h2>
+    <input type="email" placeholder='<ly-as-4182870>Email</ly-as-4182870>' required id="contactForEmail" name="contact[email]">
+    <input type="telephone" placeholder='<ly-as-4182871>Telephone</ly-as-4182871>' required id="contactFormTelephone" name="contact[phone]">
+    {% comment %}
+    <input type="email" placeholder='Confirm Email' required id="contactFormConfirmEmail">
+    <div style='clear:both;'></div>
+    {% endcomment %}
+  </div>
+
+  <div id="contactFormWrapper" class='shippingA'>
+      <div class='inputs'>
+      {% comment %}
+        <h2>SHIPPING ADDRESS</h2>
+        <input type="text" placeholder='First name' required id="contactFormName" name="contact[name]">
+        <input type="text" placeholder='Last name' required id="contactForLastName"  name="contact[lastname]">
+        <input type="text" placeholder='Company (optional)' id="contactForCompany"  name="contact[company]">
+        <input type="text" placeholder='Address' required id="contactForAddress"  name="contact[address]">
+        <input type="telephone" placeholder='Telephone' required id="contactFormTelephone" name="contact[phone]">
+        <input type="text" placeholder='City' required id="contactForCity"  name="contact[city]">
+        {% endcomment %}
+        <div style='clear:both;'></div>
+      </div>
+      <textarea placeholder='<ly-as-4182866>Message</ly-as-4182866>' required rows="10" id="contactFormMessage" name="contact[body]"></textarea>
+      <div class='send'>
+        <input type="submit" id="contactFormSubmit" value="<ly-as-4182869>SEND</ly-as-4182869>" />
+      </div>
+      
+  </div>
+
+  {% endform %}
+
+  <img src="{% comment %}ly_asset_replace_for_[ 'image10.jpg' | asset_url ]_begin{% endcomment %}{% assign ly_asset = 'image10.jpg' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}">
+  <div style='clear:both;'></div>
+</div>
+  <style>
+  .contact-form {margin:1em 0}
+  .feedback {padding:0.5em 0.7em;}
+  .feedback p {padding:0.5em 0 !important;margin:0 !important}
+  .errorForm {background:#eebdbd;color:red}
+  </style>
+{% comment %}
+
+<script type="text/javascript">
+  var password = document.getElementById("contactForEmail"), confirm_password = document.getElementById("contactFormConfirmEmail");
+
+  function validatePassword(){
+    if(password.value != confirm_password.value) {
+      confirm_password.setCustomValidity("Mail Don't Match");
+    } else {
+      confirm_password.setCustomValidity('');
+    }
+  }
+
+  password.onchange = validatePassword;
+  confirm_password.onkeyup = validatePassword;
+</script>
+{% endcomment %}
+
+
+{% comment %}
+<h1>{% comment %}ly_code_replace_for_[ page.title ]_begin{% endcomment %}{% include 'ly-title' with page %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}</h1>
+<div class="rte">
+  {% comment %}ly_code_replace_for_[ page.content ]_begin{% endcomment %}{% include 'ly-content' with page %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}
+</div>
+{% endcomment %}

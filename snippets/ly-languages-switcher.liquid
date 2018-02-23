@@ -1,0 +1,1 @@
+<select id="ly-languages-switcher">{% for language in shop.metafields.languages %}{% assign key = language | first %}{% assign value = language | last %}{% if key != "default" %}<option value="{{ key }}">{{ value }}</option>{% endif %}{% endfor %}</select>

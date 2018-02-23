@@ -1,0 +1,28 @@
+{% layout none %}<?xml version="1.0" encoding="UTF-8" ?>
+<rss xmlns:g="http://base.google.com/ns/1.0" version="2.0">
+<channel>
+    <title>{{langify_shop_name | escape }} Products for elogia</title>
+
+    <link>{{shop.url}}</link>
+{% paginate collections.all.products by 1000 %}{% for product in collections.all.products %}
+   <!-- Item #{{ forloop.index }} -->
+   <item>
+   <title><![CDATA[{% comment %}ly_code_replace_for_[ product.title | strip_html | strip_newlines | escape | replace: 'amp;', 'and' | replace: '&#38;', 'and' | replace: "Ã©", "e" | replace: "Ã ", "a" ]_begin{% endcomment %}{% include 'ly-title' with product %}{{ ly_translation | strip_html | strip_newlines | escape | replace: 'amp;', 'and' | replace: '&#38;', 'and' | replace: "Ã©", "e" | replace: "Ã ", "a" }}{% comment %}ly_code_replace_end{% endcomment %}]]></title>
+   <g:brand>{% comment %}ly_code_replace_for_[product.vendor | escape ]_begin{% endcomment %}{% include 'ly-vendor' with product %}{{ly_translation | escape }}{% comment %}ly_code_replace_end{% endcomment %}</g:brand>
+   <g:product_type>{% comment %}ly_code_replace_for_[product.type | escape ]_begin{% endcomment %}{% include 'ly-type' with product %}{{ly_translation | escape }}{% comment %}ly_code_replace_end{% endcomment %}</g:product_type>
+   <g:id>{{product.id}}</g:id>
+   <g:condition>New</g:condition>
+   <description><![CDATA[{% comment %}ly_code_replace_for_[ product.description | strip_html | strip_newlines | replace: 'amp;', 'and' | replace: '&#38;', 'and' | replace: "..", ". " | replace: "  ", " " | replace: "â€˜", "&#39;" | replace: "â€™", "&#39;" | replace: "&#8216;", "&#39;" | replace: "&#8217;", "&#39;" | replace: "&#8217;", "&#39;" | replace: "Ã¢â‚¬â„¢", "&#39;" | replace: "Ã¢â‚¬Å“", "&#39;" | replace: "Ã¢â‚¬Ëœ", "&#39;"  | replace: "Ã‚Â´", "&#39;" | replace: "â€œ", "&#34;" | replace: "â€", "&#34;" | replace: "&#8211;", "-" | replace: "Ã¢â‚¬â€œ", "-" | replace: "Ã¢â‚¬â€", "-" | replace: "â€“", "&mdash;" | replace: "â€”", "&mdash;" | replace: "%", "&#37;" | replace: "Ã‚Â©", "&copy;" | replace: "Ã‚Â®", "&reg;" | replace: "Ã¢â€žÂ¢", "&trade;" | replace: "Ã‚Â£", "&pound;" | replace: "Ã¯Â¿Â­", "&#42;" | replace: "Ã¢â‚¬Â¢", "&#42;" | replace: "Ã¢â‚¬Â", "&#39;" | replace: "&#233;", "e" | replace: "Ã©", "e" | replace: "Ã ", "a" | replace: "Ã³", "o" | replace: "Ãª", "e" | replace: "ÃƒËœ", "O" | replace: "&#8482;", "" | replace: "&#174;", "" ]_begin{% endcomment %}{% include 'ly-description' with product %}{{ ly_translation | strip_html | strip_newlines | replace: 'amp;', 'and' | replace: '&#38;', 'and' | replace: "..", ". " | replace: "  ", " " | replace: "â€˜", "&#39;" | replace: "â€™", "&#39;" | replace: "&#8216;", "&#39;" | replace: "&#8217;", "&#39;" | replace: "&#8217;", "&#39;" | replace: "Ã¢â‚¬â„¢", "&#39;" | replace: "Ã¢â‚¬Å“", "&#39;" | replace: "Ã¢â‚¬Ëœ", "&#39;"  | replace: "Ã‚Â´", "&#39;" | replace: "â€œ", "&#34;" | replace: "â€", "&#34;" | replace: "&#8211;", "-" | replace: "Ã¢â‚¬â€œ", "-" | replace: "Ã¢â‚¬â€", "-" | replace: "â€“", "&mdash;" | replace: "â€”", "&mdash;" | replace: "%", "&#37;" | replace: "Ã‚Â©", "&copy;" | replace: "Ã‚Â®", "&reg;" | replace: "Ã¢â€žÂ¢", "&trade;" | replace: "Ã‚Â£", "&pound;" | replace: "Ã¯Â¿Â­", "&#42;" | replace: "Ã¢â‚¬Â¢", "&#42;" | replace: "Ã¢â‚¬Â", "&#39;" | replace: "&#233;", "e" | replace: "Ã©", "e" | replace: "Ã ", "a" | replace: "Ã³", "o" | replace: "Ãª", "e" | replace: "ÃƒËœ", "O" | replace: "&#8482;", "" | replace: "&#174;", "" }}{% comment %}ly_code_replace_end{% endcomment %}]]></description>
+   <g:image_link>https:{{product.featured_image | product_img_url: '800x800'}}</g:image_link>
+   <link>{{shop.url}}{{product.url}}</link>
+   <g:price>{{product.price | money_without_currency}}</g:price>
+   <g:quantity>1</g:quantity>
+   <g:payment_accepted>Visa</g:payment_accepted>
+   <g:payment_accepted>MasterCard</g:payment_accepted>
+   <g:payment_notes>We also accept Paypal</g:payment_notes>
+   <g:google_product_category>166</g:google_product_category>
+   <availability>in stock</availability>
+ </item>
+{% endfor %}{% endpaginate %}
+</channel>
+</rss>

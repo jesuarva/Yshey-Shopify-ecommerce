@@ -1,0 +1,244 @@
+{% comment %}ly_global_begin{% endcomment %}{% include 'ly-global' %}{% comment %}ly_global_end{% endcomment %}
+{% comment %}
+  A word on drop-down menus: Shopify has no concept of them.
+  Drop-down menus in Shopify themes are a hack that relies on a naming convention.
+  To create a drop-down menu, the merchant must create a link list that has the same name as the link he wants the drop-down for.
+  For example, if he wants a drop-down under a 'Shop by brand' link (say, he has such link in his Main Menu), he needs to create a linklist called 'Shop by brand', and populate it with links. Once he has done that, there'll be a drop-down under 'Shop by brand'.
+  Shopify has a visual how-to guide here: http://docs.shopify.com/manual/your-website/navigation/create-drop-down-menu.
+  The naming convention hack won't work well if a shop's navigation uses non-English characters. There's a much more verbose coding solution that handles non-English characters here: http://docs.shopify.com/manual/configuration/store-customization/currencies-and-translations/translations/can-i-have-drop-down-menus-that-use-non-english-characters.
+  A word on sub-categories: Shopify manages sub-categories using product tags: http://docs.shopify.com/manual/configuration/store-customization/page-specific/collections/subcategories
+{% endcomment %}
+<nav role="navigation" class="menuAll left">
+  <div class='bandaBaja'></div>
+  <div class='bandaBajaDos'></div>
+  <ul class="nav">
+
+<!-- JESUARVA -->
+    <li class="textAll">
+    <div class='icon hasWindow tobeanimatedUp'>
+      <a class="textLeft" href="/pages/free-returns-exchanges">
+        <div class='{% if template == 'index' or template == 'product' or page.handle == 'shop-instagram' %} returns2 {% else %} returns {% endif %}'>
+          <span id="textBold"><ly-as-4665877>FREE Exchanges</ly-as-4665877></span><br><span><ly-as-4665876>Perfect Fit Guarantee</ly-as-4665876></span>
+        </div>
+      </a>
+      <div class='window' style='display:none;'>
+        <div class='title'>
+          {% comment %}ly_code_replace_for_[ pages.free-returns-exchanges.title ]_begin{% endcomment %}{% include 'ly-title' with pages.free-returns-exchanges %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}
+        </div>
+        <div class='content'>
+          {% comment %}ly_code_replace_for_[ pages.free-returns-exchanges.content ]_begin{% endcomment %}{% include 'ly-content' with pages.free-returns-exchanges %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}
+        </div>
+      </div>
+    </div>
+    </li>
+<!-- JESUARVA end -->
+
+    {% for link in linklists.main-menu.links %}
+    {% assign has_sub_menu = false %}
+    {% assign has_sub_categories = false %}
+    {% assign parent_link_active = false %}
+    {% assign child_list_handle = link.title | handle %}
+    {% if linklists[child_list_handle] and linklists[child_list_handle].links.size > 0 %}
+      {% assign has_sub_menu = true %}
+      {% for l in linklists[child_list_handle].links %}
+        {% if handle != blank and handle == l.object.handle %}
+          {% assign parent_link_active = true %}
+        {% elsif langify_title == l.title %}
+          {% assign parent_link_active = true %}
+        {% endif %}
+      {% endfor %}
+    {% elsif link.type == 'collection_link' and link.object.all_tags.size > 0 %}
+      {% assign has_sub_categories = true %}
+    {% endif %}
+    <li class="{% if link.active or parent_link_active %} active{% endif %}{% if has_sub_menu or has_sub_categories %} has-dropdown{% endif %}{% if forloop.first %} first{% elsif forloop.last %} last{% endif %}">
+      <div class='raya'></div>
+      <a href="{{ link.url }}">{% comment %}ly_code_replace_for_[ link.title ]_begin{% endcomment %}{% include 'ly-title' with link %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}</a>
+      {% if has_sub_menu or has_sub_categories %}
+      <div class='divSub'>
+        <ul class="sub-nav">
+    
+<!-- JESUARVA -->
+    <li class="textNav">
+          <div class='icon hasWindow tobeanimatedUp'>
+      <a class="textLeft" href="/pages/free-returns-exchanges">
+        <div class='returns'>
+          <span id="textBold"><ly-as-4665877>FREE Exchanges</ly-as-4665877></span><br><span><ly-as-4665876>Perfect Fit Guarantee</ly-as-4665876></span>
+        </div>
+      </a>
+      <div class='window' style='display:none;'>
+        <div class='title'>
+          {% comment %}ly_code_replace_for_[ pages.free-returns-exchanges.title ]_begin{% endcomment %}{% include 'ly-title' with pages.free-returns-exchanges %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}
+        </div>
+        <div class='content'>
+          {% comment %}ly_code_replace_for_[ pages.free-returns-exchanges.content ]_begin{% endcomment %}{% include 'ly-content' with pages.free-returns-exchanges %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}
+        </div>
+      </div>
+    </div>
+    </li>
+<!-- JESUARVA end -->
+
+          {% if has_sub_menu %}
+            {% for l in linklists[child_list_handle].links %}
+            <li class="{% if l.active %} active{% endif %}">
+              <a href="{{ l.url }}">{% comment %}ly_code_replace_for_[ l.title ]_begin{% endcomment %}{% include 'ly-title' with l %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}</a>
+            </li>
+            {% endfor %}
+          {% elsif has_sub_categories %}
+            {% for tag in link.object.all_tags %}
+            <li class="{% if current_tags contains tag %} active{% endif %}">
+              <a href="{{ link.url }}/{{ tag | handle }}">{{ tag }}</a>
+            </li>
+            {% endfor %}
+          {% endif %}
+          <!-- JESUARVA only this line -->     <li class="textNav"><div class="{% if template == 'index' or template == 'product' or page.handle == 'shop-instagram' %} fshipping2 {% else %} fshipping {% endif %}"><span id="textBold"><ly-as-4665878>FREE Shipping</ly-as-4665878></span><span><br><ly-as-4845774>in orders over € 100</ly-as-4845774></span></div></li>
+        </ul>
+      </div>
+      {% endif %}
+    </li>
+    {% endfor %}
+    <!-- JESUARVA only this line -->    <li class="textAll"><div class="{% if template == 'index' or template == 'product' or page.handle == 'shop-instagram' %} fshipping2 {% else %} fshipping {% endif %}"><span id="textBold"><ly-as-4665878>FREE Shipping</ly-as-4665878></span><span><br><ly-as-4845774>in orders over € 100</ly-as-4845774></span></div></li>  
+  </ul>
+</nav>
+
+<nav role="navigation" class="subMenuI left">
+  <ul class="nav">
+    {% for link in linklists.main-menu.links %}
+    {% assign has_sub_menu = false %}
+    {% assign has_sub_categories = false %}
+    {% assign parent_link_active = false %}
+    {% assign child_list_handle = link.title | handle %}
+    {% if linklists[child_list_handle] and linklists[child_list_handle].links.size > 0 %}
+      {% assign has_sub_menu = true %}
+      {% for l in linklists[child_list_handle].links %}
+        {% if handle != blank and handle == l.object.handle %}
+          {% assign parent_link_active = true %}
+        {% elsif langify_title == l.title %}
+          {% assign parent_link_active = true %}
+        {% endif %}
+      {% endfor %}
+    {% elsif link.type == 'collection_link' and link.object.all_tags.size > 0 %}
+      {% assign has_sub_categories = true %}
+    {% endif %}
+    <li class="{% if link.active or parent_link_active %} active{% endif %}{% if has_sub_menu or has_sub_categories %} has-dropdown{% endif %}{% if forloop.first %} first{% elsif forloop.last %} last{% endif %}">
+      {% if has_sub_menu or has_sub_categories %}
+      <div class='divSub'>
+        <ul class="sub-nav">
+  
+<!-- JESUARVA -->
+  <li class="textSub">
+    <div class='icon hasWindow tobeanimatedUp'>
+      <a class="textLeft" href="/pages/free-returns-exchanges">
+        <div class='returns2'>
+          <span id="textBold"><ly-as-4665877>FREE Exchanges</ly-as-4665877><br></span><span><ly-as-4665876>Perfect Fit Guarantee</ly-as-4665876></span>
+        </div>
+      </a>
+      <div class='window' style='display:none;'>
+        <div class='title'>
+          {% comment %}ly_code_replace_for_[ pages.free-returns-exchanges.title ]_begin{% endcomment %}{% include 'ly-title' with pages.free-returns-exchanges %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}
+        </div>
+        <div class='content'>
+          {% comment %}ly_code_replace_for_[ pages.free-returns-exchanges.content ]_begin{% endcomment %}{% include 'ly-content' with pages.free-returns-exchanges %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}
+        </div>
+      </div>
+    </div>
+  </li>      
+<!-- JESUARVA end -->
+
+          {% if has_sub_menu %}
+            {% for l in linklists[child_list_handle].links %}
+            <li class="{% if l.active %} active{% endif %}">
+              <a href="{{ l.url }}">{% comment %}ly_code_replace_for_[ l.title ]_begin{% endcomment %}{% include 'ly-title' with l %}{{ ly_translation }}{% comment %}ly_code_replace_end{% endcomment %}</a>
+            </li>
+            {% endfor %}
+          {% elsif has_sub_categories %}
+            {% for tag in link.object.all_tags %}
+            <li class="{% if current_tags contains tag %} active{% endif %}">
+              <a href="{{ link.url }}/{{ tag | handle }}">{{ tag }}</a>
+            </li>
+            {% endfor %}
+          {% endif %}
+          <!-- JESUARVA only this line -->  <li class="textSub"><div class="fshipping2"><span id="textBold"><ly-as-4665878>FREE Shipping</ly-as-4665878></span><span><br><ly-as-4845774>in orders over € 100</ly-as-4845774></span></div></li>
+        </ul>
+      </div>
+      {% endif %}
+    </li>
+    {% endfor %}
+  </ul> 
+</nav>
+
+<div id='menuAct' class='hdt header-top-icons'>
+  <div class='icon user'>
+    <img class='blanco' src="{% comment %}ly_asset_replace_for_[ 'userBlanco.png' | asset_url ]_begin{% endcomment %}{% assign ly_asset = 'userBlanco.png' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}"  alt="<ly-as-4182697>user</ly-as-4182697>" itemprop="user">
+    <ul class='user'>
+      {% if shop.customer_accounts_enabled %}
+        {% if customer  %}
+          <li><a href="/account"><ly-as-4182693>Your Account</ly-as-4182693></a></li>
+          <li>{{ '<ly-as-4182694>Log out</ly-as-4182694>' | customer_logout_link }}</li>
+        {% else %}
+          <li>{{ '<ly-as-4182695>Log in</ly-as-4182695>' | customer_login_link }}</li>
+          {% if shop.customer_accounts_optional %}
+            <li>{{ '<ly-as-4182696>Create an account</ly-as-4182696>' | customer_register_link }}</li>
+          {% endif %}
+        {% endif %}
+      {% endif %}
+    </ul>
+  </div>
+  <div class='icon conversor'></div>
+  <div class='icon language'>
+    {% if cart.attributes.language == 'ly27068' %}
+      <div class='objeto'>
+        <div class="blanco">
+          <img class='espanol' src="{% comment %}ly_asset_replace_for_[ 'languageEsW.png' | asset_url ]_begin{% endcomment %}{% assign ly_asset = 'languageEsW.png' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}"  alt="<ly-as-4182698>language</ly-as-4182698>" itemprop="language">
+        </div>
+        <div class="negro">
+          <img class='espanol' src="{% comment %}ly_asset_replace_for_[ 'languageEsW.png' | asset_url ]_begin{% endcomment %}{% assign ly_asset = 'languageEsW.png' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}"  alt="<ly-as-4182698>language</ly-as-4182698>" itemprop="language">
+        </div>
+      
+      </div>
+      <ul class='languages'>
+        <li>
+          <div class='objeto'>
+            <div class='blanco'>
+              <a href="#" id="ly27146" class="ly-languages-switcher-link">
+                <img class='blanco english' src="{% comment %}ly_asset_replace_for_[ 'icon-language.png' | asset_url ]_begin{% endcomment %}{% assign ly_asset = 'icon-language.png' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}"  alt="<ly-as-4182698>language</ly-as-4182698>" itemprop="language">
+              </a>
+            </div>
+            <div class='negro'>
+              <a href="#" id="ly27146" class="ly-languages-switcher-link">
+                <img class='negro english' src="{% comment %}ly_asset_replace_for_[ 'icon-languageB.png' | asset_url ]_begin{% endcomment %}{% assign ly_asset = 'icon-languageB.png' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}"  alt="<ly-as-4182698>language</ly-as-4182698>" itemprop="language">
+              </a>
+            </div>
+          </div>
+        </li>
+      </ul>
+    {% else %}
+      <div class='objeto'>
+        <div class="blanco">
+          <img class='blanco english' src="{% comment %}ly_asset_replace_for_[ 'languageEnW.png' | asset_url ]_begin{% endcomment %}{% assign ly_asset = 'languageEnW.png' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}"  alt="<ly-as-4182698>language</ly-as-4182698>" itemprop="language">
+        </div>
+        <div class="negro">
+          <img class='negro english' src="{% comment %}ly_asset_replace_for_[ 'languageEnB.png' | asset_url ]_begin{% endcomment %}{% assign ly_asset = 'languageEnB.png' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}"  alt="<ly-as-4182698>language</ly-as-4182698>" itemprop="language">
+        </div>
+      
+      </div>
+      <ul class='languages'>
+        <li>
+          <div class='objeto'>
+            <div class='blanco'>
+              <a href="#" id="ly27268" class="ly-languages-switcher-link">
+                <img class='espanol' src="{% comment %}ly_asset_replace_for_[ 'languageEnW.png' | asset_url ]_begin{% endcomment %}{% assign ly_asset = 'languageEnW.png' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}"  alt="<ly-as-4182698>language</ly-as-4182698>" itemprop="language">
+              </a>
+            </div>
+            <div class='negro'>
+              <a href="#" id="ly27268" class="ly-languages-switcher-link">
+                <img class='espanol' src="{% comment %}ly_asset_replace_for_[ 'languageEnB.png' | asset_url ]_begin{% endcomment %}{% assign ly_asset = 'languageEnB.png' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}"  alt="<ly-as-4182698>language</ly-as-4182698>" itemprop="language">
+              </a>
+            </div>
+          </div>
+        </li>
+      </ul>
+
+    {% endif %}
+  </div>
+</div>
+

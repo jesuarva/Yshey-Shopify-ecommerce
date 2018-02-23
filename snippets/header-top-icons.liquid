@@ -1,0 +1,107 @@
+{% comment %}ly_global_begin{% endcomment %}{% include 'ly-global' %}{% comment %}ly_global_end{% endcomment %}
+{% comment %}
+	Snippets con los iconos del header a la derecha
+{% endcomment %}
+{% comment %}
+<div class="winners">
+  <a href="pages/instagram-contest-winners"><img class="iconwin" src="{{ 'iconwin.svg' | asset_url }}"></a>
+</div>
+{% endcomment %}
+
+<div class='icon search'>
+	<img class='blanco' src="{% comment %}ly_asset_replace_for_[ 'lupaBlanco.png' | asset_url ]_begin{% endcomment %}{% assign ly_asset = 'lupaBlanco.png' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}"  alt="<ly-as-4182685>search</ly-as-4182685>" itemprop="search">
+	<img class="negro" src="{% comment %}ly_asset_replace_for_[ 'lupaNegro.png' | asset_url ]_begin{% endcomment %}{% assign ly_asset = 'lupaNegro.png' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}"  alt="<ly-as-4182685>search</ly-as-4182685>" itemprop="search">
+	<img class="coral" src="{% comment %}ly_asset_replace_for_[ 'lupaCoral.png' | asset_url ]_begin{% endcomment %}{% assign ly_asset = 'lupaCoral.png' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}"  alt="<ly-as-4182685>search</ly-as-4182685>" itemprop="search">
+</div> 
+<div class='icon conversor'></div>
+<div class='icon language'>
+	{% if cart.attributes.language == 'ly27068' %}
+		<div class='objeto'>
+			<div class="blanco">
+				<img class='espanol blanco' src="{% comment %}ly_asset_replace_for_[ 'languageEsW.png' | asset_url ]_begin{% endcomment %}{% assign ly_asset = 'languageEsW.png' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}"  alt="<ly-as-4182686>language</ly-as-4182686>" itemprop="language">
+			</div>
+			<div class="negro">
+				<img class='espanol negro' src="{% comment %}ly_asset_replace_for_[ 'languageEsB.png' | asset_url ]_begin{% endcomment %}{% assign ly_asset = 'languageEsB.png' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}"  alt="<ly-as-4182686>language</ly-as-4182686>" itemprop="language">
+			</div>
+			<div class="coral">
+				<img class='espanol coral' src="{% comment %}ly_asset_replace_for_[ 'languageEsC.png' | asset_url ]_begin{% endcomment %}{% assign ly_asset = 'languageEsC.png' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}"  alt="<ly-as-4182686>language</ly-as-4182686>" itemprop="language">
+			</div>
+		</div>
+		<ul class='languages'>
+			<li>
+				<div class='objeto'>
+					<div class='blanco'>
+						<a href="#" id="ly26832" class="ly-languages-switcher-link">
+							<img class='blanco english' src="{% comment %}ly_asset_replace_for_[ 'icon-language.png' | asset_url ]_begin{% endcomment %}{% assign ly_asset = 'icon-language.png' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}"  alt="<ly-as-4182686>language</ly-as-4182686>" itemprop="language">
+						</a>
+					</div>
+					<div class='negro'>
+						<a href="#" id="ly26832" class="ly-languages-switcher-link">
+							<img class='negro english' src="{% comment %}ly_asset_replace_for_[ 'icon-languageB.png' | asset_url ]_begin{% endcomment %}{% assign ly_asset = 'icon-languageB.png' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}"  alt="<ly-as-4182686>language</ly-as-4182686>" itemprop="language">
+						</a>
+					</div>
+				</div>
+			</li>
+		</ul>
+	{% else %}
+		<div class='objeto'>
+			<div class="blanco">
+				<img class='blanco english' src="{% comment %}ly_asset_replace_for_[ 'languageEnW.png' | asset_url ]_begin{% endcomment %}{% assign ly_asset = 'languageEnW.png' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}"  alt="<ly-as-4182686>language</ly-as-4182686>" itemprop="language">
+			</div>
+			<div class="negro">
+				<img class='negro english' src="{% comment %}ly_asset_replace_for_[ 'languageEnB.png' | asset_url ]_begin{% endcomment %}{% assign ly_asset = 'languageEnB.png' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}"  alt="<ly-as-4182686>language</ly-as-4182686>" itemprop="language">
+			</div>
+			<div class="coral">
+				<img class='coral english' src="{% comment %}ly_asset_replace_for_[ 'languageEnC.png' | asset_url ]_begin{% endcomment %}{% assign ly_asset = 'languageEnC.png' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}"  alt="<ly-as-4182686>language</ly-as-4182686>" itemprop="language">
+			</div>
+		</div>
+		<ul class='languages'>
+			<li>
+				<div class='objeto'>
+					<div class='blanco'>
+						<a href="#" id="ly27068" class="ly-languages-switcher-link">
+							<img class='espanol' src="{% comment %}ly_asset_replace_for_[ 'icon-languageES.png' | asset_url ]_begin{% endcomment %}{% assign ly_asset = 'icon-languageES.png' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}"  alt="<ly-as-4182686>language</ly-as-4182686>" itemprop="language">
+						</a>
+					</div>
+					<div class='negro'>
+						<a href="#" id="ly27068" class="ly-languages-switcher-link">
+							<img class='espanol' src="{% comment %}ly_asset_replace_for_[ 'icon-languageESB.png' | asset_url ]_begin{% endcomment %}{% assign ly_asset = 'icon-languageESB.png' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}"  alt="<ly-as-4182686>language</ly-as-4182686>" itemprop="language">
+						</a>
+					</div>
+				</div>
+			</li>
+		</ul>
+
+	{% endif %}
+</div>
+<div class='icon user'>
+	<img class='blanco' src="{% comment %}ly_asset_replace_for_[ 'userBlanco.png' | asset_url ]_begin{% endcomment %}{% assign ly_asset = 'userBlanco.png' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}"  alt="<ly-as-4182687>user</ly-as-4182687>" itemprop="user">
+	<img class='negro' src="{% comment %}ly_asset_replace_for_[ 'userNegro.png' | asset_url ]_begin{% endcomment %}{% assign ly_asset = 'userNegro.png' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}"  alt="<ly-as-4182687>user</ly-as-4182687>" itemprop="user">
+	<img class='coral' src="{% comment %}ly_asset_replace_for_[ 'userCoral.png' | asset_url ]_begin{% endcomment %}{% assign ly_asset = 'userCoral.png' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}"  alt="<ly-as-4182687>user</ly-as-4182687>" itemprop="user">
+	<ul class='user'>
+		{% if shop.customer_accounts_enabled %}
+		  {% if customer  %}
+		    <li><a href="/account"><ly-as-4182681>Your Account</ly-as-4182681></a></li>
+		    <li>{{ '<ly-as-4182682>Log out</ly-as-4182682>' | customer_logout_link }}</li>
+		  {% else %}
+		    <li>{{ '<ly-as-4182683>Log in</ly-as-4182683>' | customer_login_link }}</li>
+		    {% if shop.customer_accounts_optional %}
+		      <li>{{ '<ly-as-4182684>Create an account</ly-as-4182684>' | customer_register_link }}</li>
+		    {% endif %}
+		  {% endif %}
+		{% endif %}
+	</ul>
+</div>
+<a href="/cart">
+	<div class='icon bag'>
+		{% if cart.item_count > 0 %}
+			<img src="{% comment %}ly_asset_replace_for_[ 'icon-bagfill.png' | asset_url ]_begin{% endcomment %}{% assign ly_asset = 'icon-bagfill.png' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}"  alt="<ly-as-4182688>bag</ly-as-4182688>" itemprop="bag">
+			<span class='itemCount'></span>
+		{% else %}
+			<img class='blanco' src="{% comment %}ly_asset_replace_for_[ 'icon-bag.png' | asset_url ]_begin{% endcomment %}{% assign ly_asset = 'icon-bag.png' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}"  alt="<ly-as-4182688>bag</ly-as-4182688>" itemprop="bag">
+			<img class='negro' src="{% comment %}ly_asset_replace_for_[ 'icon-bagB.png' | asset_url ]_begin{% endcomment %}{% assign ly_asset = 'icon-bagB.png' %}{% include 'ly-asset' with ly_asset %}{{ ly_translation  }}{% comment %}ly_asset_replace_end{% endcomment %}"  alt="<ly-as-4182688>bag</ly-as-4182688>" itemprop="bag">
+			<span class='itemCount'>0</span>
+		{% endif %}
+	</div>
+</a>
+<div style='clear: both;'></div>
